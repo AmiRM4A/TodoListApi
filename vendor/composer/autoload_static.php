@@ -7,6 +7,10 @@ namespace Composer\Autoload;
 class ComposerStaticInit188a7c86e28e0b09a0c7d5e36b5e9c90
 {
     public static $prefixLengthsPsr4 = array (
+        'S' => 
+        array (
+            'Symfony\\Component\\Dotenv\\' => 25,
+        ),
         'M' => 
         array (
             'Medoo\\' => 6,
@@ -14,6 +18,10 @@ class ComposerStaticInit188a7c86e28e0b09a0c7d5e36b5e9c90
     );
 
     public static $prefixDirsPsr4 = array (
+        'Symfony\\Component\\Dotenv\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/dotenv',
+        ),
         'Medoo\\' => 
         array (
             0 => __DIR__ . '/..' . '/catfan/medoo/src',
