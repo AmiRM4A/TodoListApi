@@ -244,4 +244,7 @@ modules.xml
 .idea/misc.xml
 *.ipr
 
+### dotenv ###
+.env
+
 # End of https://www.toptal.com/developers/gitignore/api/git,phpstorm,phpstorm+iml,phpstorm+all
