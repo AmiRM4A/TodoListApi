@@ -6,12 +6,12 @@ use Medoo\Medoo;
 
 class DB {
 	private static ?Medoo $connection = null;
-	
+
 	public static function q(): Medoo {
 		self::connect();
 		return self::$connection;
 	}
-	
+
 	private static function connect(): void {
 		if (is_null(static::$connection)) {
 			try {
