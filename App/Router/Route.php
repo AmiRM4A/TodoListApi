@@ -8,7 +8,11 @@ class Route {
 	private static $routes = [];
 
 	public static function add(string $name, array|string $method, callable|array|string $action): void {
-		static::$routes[$method] = [$name, Str::toUpperCase($method), $action];
+		self::$routes[] = [
+			'name' => $name,
+			'method' => Str::toUpperCase($method),
+			'action' => $action
+		];
 	}
 
 	public static function get(string $name, callable|array|string $action): void {
