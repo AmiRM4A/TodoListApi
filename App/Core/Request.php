@@ -14,7 +14,11 @@ class Request {
 	}
 	
 	public static function url(): string {
-		return trim(strtok(self::fullUrl(), '?'), '/');
+		$url = strtok(self::fullUrl(), '?');
+		if ($url === '/') {
+			return $url;
+		}
+		return trim($url, '/');
 	}
 	
 	public static function host(): string {
