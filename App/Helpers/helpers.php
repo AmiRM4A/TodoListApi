@@ -9,6 +9,10 @@ if (!function_exists('dump')) {
 		echo '<strong>File:</strong> ' . $caller['file'] . ' <strong>Line:</strong> ' . $caller['line'] . "\n\n";
 		print_r($data);
 		echo '</pre>';
+if (!function_exists('dd')) {
+	function dd($output): void {
+		dump($output);
+		die;
 	}
 }
 
