@@ -66,8 +66,12 @@ class Request {
 		return $_SERVER['HTTP_USER_AGENT'];
 	}
 	
+	public static function fullParams(): array {
+		return array_merge(self::params(), self::bodyParams());
+	}
+	
 	public function __get($name) {
-		$args = array_merge(self::params(), self::bodyParams());
+		$args = self::fullParams();
 		return $args[$name] ?? null;
 	}
 }
