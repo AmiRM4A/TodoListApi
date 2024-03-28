@@ -5,7 +5,7 @@ namespace App\Router;
 use App\Helpers\Str;
 
 class Route {
-	private static $routes = [];
+	private static array $routes = [];
 
 	public static function add(string $name, array|string $method, callable|array|string $action): void {
 		self::$routes[] = [
