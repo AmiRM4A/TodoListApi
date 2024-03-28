@@ -3,17 +3,16 @@
 namespace App\Router;
 
 use App\Core\Request;
-use App\Router\Route;
 
 class Router {
-	private static $isDispatched = false;
-	private static $route = null;
-	private static $routes = [];
-	private static $params = null;
+	private static bool $isDispatched = false;
+	private static null|array $route = null;
+	private static array $routes = [];
+	private static null|array $params = null;
 	const STRING_ACTION_SEPRATOR = '@';
 	const CONTROLLERS_BASE_PATH  = 'App\Controllers\\';
 	
-	public static function dispatch() {
+	public static function dispatch(): void {
 		if (self::$isDispatched) {
 			return;
 		}
@@ -39,12 +38,12 @@ class Router {
 	}
 	
 	private static function executeAction($action): bool {
-		if (is_null($action) || empty($action)) {
+		if (empty($action)) {
 			return false;
 		}
 		
 		if (is_callable($action)) {
-			call_user_func($action, self::$params);
+			$action(self::$params);
 			return true;
 		}
 		
@@ -97,6 +96,6 @@ class Router {
 	}
 	
 	private static function isValidMethod($request_method, $route_methods): bool {
-		return (!in_array($request_method, $route_methods, true)) ? false : true;
+		return (bool) in_array($request_method, $route_methods, true);
 	}
 }
