@@ -1,5 +1,6 @@
 <?php
 
+use App\Router\Router;
 
 # Include required files
 require '../vendor/autoload.php';
@@ -17,3 +18,4 @@ $dotenv = new Symfony\Component\Dotenv\Dotenv();
 $dotenv->load(__DIR__ . '/.env');
 
 # Routing 
+Router::dispatch();
