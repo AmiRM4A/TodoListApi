@@ -247,4 +247,12 @@ modules.xml
 ### dotenv ###
 .env
 
+### Composer ###
+/vendor/
+composer.lock
+
+### Others ###
+.txt
+.todo
+
 # End of https://www.toptal.com/developers/gitignore/api/git,phpstorm,phpstorm+iml,phpstorm+all
