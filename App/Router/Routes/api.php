@@ -4,11 +4,14 @@ use App\Router\Route;
 
 # API Routes Would Be Here...
 
-# Avalable Route Adding Methods:
+## Route ##
+# Declaring Route Names:
+# Static: tasks (domain.com/tasks)
+## Method ##
 # String => 'Controller@Method'
 # Array => ['Controller' , 'Method']
 # Callable => Just pass an anonymous function
 
-Route::add('/', ['get', 'post'], function () {
+Route::new('/', ['get', 'post'], function () {
 	echo 'Welcome to API';
 });
