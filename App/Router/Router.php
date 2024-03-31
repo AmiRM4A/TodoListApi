@@ -9,6 +9,7 @@ class Router {
 	private static ?object $route = null;
 	private static array $routes = [];
 	private static ?array $params = null;
+	private static array $slugs = [];
 	
 	public const STRING_ACTION_SEPRATOR = '@';
 	public const CONTROLLERS_BASE_PATH  = 'App\Controllers\\';
@@ -43,7 +44,7 @@ class Router {
 		}
 		
 		if (is_callable($action)) {
-			$action(self::$params);
+			$action(...self::$slugs);
 			return true;
 		}
 		
@@ -58,11 +59,13 @@ class Router {
 		$className = self::CONTROLLERS_BASE_PATH . $action[0];
 		$methodName = $action[1];
 		
-		if (class_exists($className) && method_exists($className, $methodName)) {
-			$class = new $className;
-			$class->$methodName(self::$params);
-			return true;
+		if (!class_exists($className) || !method_exists($className, $methodName)) {
+			return false;
 		}
+		
+		$class = new $className;
+		$class->$methodName(...self::$slugs);
+		return true;
 	}
 	
 	private static function findRoute(): void {
@@ -72,14 +75,27 @@ class Router {
 		self::getRoutes(Request::method());
 		
 		$requestUri = Request::uri();
+		/** @var ?Route $matchedRoute */
+		$matchedRoute = null;
+		$foundSlugs = [];
 		
 		foreach (self::$routes as $route) {
-			if ($route['name'] !== $requestUri) {
-				continue;
+			$pattern_uri = '/^' . str_replace(['/', '{', '}'], ['\/', '(?<', '>[-%\w]+)'], $route->route) . '$/';
+			if (preg_match($pattern_uri, $requestUri, $slugs)) {
+				$foundSlugs = array_filter($slugs, 'is_string', ARRAY_FILTER_USE_KEY);
+				$matchedRoute = $route;
 			}
-			self::$route = $route;
-			return;
 		}
+		
+		foreach ($matchedRoute->where ?? [] as $slug => $regex) {
+			$slugVal = $foundSlugs[$slug];
+			if (!preg_match("/$regex/", $slugVal)) {
+				return;
+			}
+		}
+		
+		static::$route = $matchedRoute;
+		static::$slugs = $foundSlugs;
 	}
 	
 	private static function getParams(): void {
