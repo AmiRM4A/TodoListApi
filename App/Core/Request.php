@@ -9,12 +9,12 @@ class Request {
 		return $_SERVER['REQUEST_METHOD'];
 	}
 	
-	public static function fullUrl(): string {
+	public static function fullUri(): string {
 		return $_SERVER['REQUEST_URI'];
 	}
 	
-	public static function url(): string {
-		$url = strtok(self::fullUrl(), '?');
+	public static function uri(): string {
+		$url = strtok(self::fullUri(), '?');
 		if ($url === '/') {
 			return $url;
 		}
