@@ -3,6 +3,7 @@
 namespace App\Core;
 
 use App\Helpers\Security;
+use App\Helpers\UserAgent;
 
 class Request {
 	public static function method(): string {
@@ -62,8 +63,8 @@ class Request {
 		return $_SERVER['REMOTE_ADDR'];
 	}
 	
-	public static function agent(): string {
-		return $_SERVER['HTTP_USER_AGENT'];
+	public static function agent(): object {
+		return new UserAgent($_SERVER['HTTP_USER_AGENT']);
 	}
 	
 	public static function fullParams(): array {
