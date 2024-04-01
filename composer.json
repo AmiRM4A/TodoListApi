@@ -1,6 +1,7 @@
 {
     "require": {
         "catfan/medoo": "^2.1",
-        "symfony/dotenv": "^7.0"
+        "symfony/dotenv": "^7.0",
+        "jenssegers/agent": "^2.6"
     }
 }

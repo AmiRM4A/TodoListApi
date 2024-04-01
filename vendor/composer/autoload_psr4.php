@@ -8,4 +8,6 @@ $baseDir = dirname($vendorDir);
 return array(
     'Symfony\\Component\\Dotenv\\' => array($vendorDir . '/symfony/dotenv'),
     'Medoo\\' => array($vendorDir . '/catfan/medoo/src'),
+    'Jenssegers\\Agent\\' => array($vendorDir . '/jenssegers/agent/src'),
+    'Jaybizzle\\CrawlerDetect\\' => array($vendorDir . '/jaybizzle/crawler-detect/src'),
 );
