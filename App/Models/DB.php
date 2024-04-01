@@ -16,15 +16,15 @@ class DB {
 		if (is_null(static::$connection)) {
 			try {
 				self::$connection = new Medoo([
-					'type' => $_ENV['DB_TYPE'],
-					'host' => $_ENV['HOST'],
-					'database' => $_ENV['DB_NAME'],
-					'username' => $_ENV['DB_USER'],
-					'password' => $_ENV['DB_PASS'],
+					'type' => DB_TYPE,
+					'host' => DB_HOST,
+					'database' => DB_NAME,
+					'username' => DB_USER,
+					'password' => DB_PASS,
 					'charset' => 'utf8mb4',
 					'collation' => 'utf8mb4_general_ci',
-					'port' => $_ENV['DB_PORT'],
-					'logging' => $_ENV['MEDOO_LOG']
+					'port' => DB_PORT,
+					'logging' => MEDOO_LOG
 				]);
 			} catch (\Exception $e) {
 				echo $e->getMessage();

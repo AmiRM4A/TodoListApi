@@ -15,6 +15,11 @@ class ComposerStaticInit188a7c86e28e0b09a0c7d5e36b5e9c90
         array (
             'Medoo\\' => 6,
         ),
+        'J' => 
+        array (
+            'Jenssegers\\Agent\\' => 17,
+            'Jaybizzle\\CrawlerDetect\\' => 24,
+        ),
     );
 
     public static $prefixDirsPsr4 = array (
@@ -26,10 +31,29 @@ class ComposerStaticInit188a7c86e28e0b09a0c7d5e36b5e9c90
         array (
             0 => __DIR__ . '/..' . '/catfan/medoo/src',
         ),
+        'Jenssegers\\Agent\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/jenssegers/agent/src',
+        ),
+        'Jaybizzle\\CrawlerDetect\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/jaybizzle/crawler-detect/src',
+        ),
+    );
+
+    public static $prefixesPsr0 = array (
+        'D' => 
+        array (
+            'Detection' => 
+            array (
+                0 => __DIR__ . '/..' . '/mobiledetect/mobiledetectlib/namespaced',
+            ),
+        ),
     );
 
     public static $classMap = array (
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
+        'Mobile_Detect' => __DIR__ . '/..' . '/mobiledetect/mobiledetectlib/Mobile_Detect.php',
     );
 
     public static function getInitializer(ClassLoader $loader)
@@ -37,6 +61,7 @@ class ComposerStaticInit188a7c86e28e0b09a0c7d5e36b5e9c90
         return \Closure::bind(function () use ($loader) {
             $loader->prefixLengthsPsr4 = ComposerStaticInit188a7c86e28e0b09a0c7d5e36b5e9c90::$prefixLengthsPsr4;
             $loader->prefixDirsPsr4 = ComposerStaticInit188a7c86e28e0b09a0c7d5e36b5e9c90::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit188a7c86e28e0b09a0c7d5e36b5e9c90::$prefixesPsr0;
             $loader->classMap = ComposerStaticInit188a7c86e28e0b09a0c7d5e36b5e9c90::$classMap;
 
         }, null, ClassLoader::class);
