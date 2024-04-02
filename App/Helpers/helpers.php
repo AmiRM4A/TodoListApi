@@ -1,6 +1,7 @@
 <?php
 
 use App\Core\Request;
+use App\Core\Response;
 use App\Helpers\UserAgent;
 
 if (!function_exists('dump')) {
@@ -31,5 +32,11 @@ if (!function_exists('sendFatalError')) {
 if (!function_exists('agent')) {
 	function agent(): UserAgent {
 		return Request::agent();
+	}
+}
+
+if (!function_exists('response')) {
+	function response(): object {
+		return new Response();
 	}
 }
