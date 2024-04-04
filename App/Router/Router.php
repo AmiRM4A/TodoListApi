@@ -3,6 +3,7 @@
 namespace App\Router;
 
 use App\Core\Request;
+use App\Core\Response;
 
 class Router {
 	private static bool $isDispatched = false;
@@ -12,7 +13,6 @@ class Router {
 	private static array $slugs = [];
 	
 	public const STRING_ACTION_SEPRATOR = '@';
-	public const CONTROLLERS_BASE_PATH  = 'App\Controllers\\';
 	
 	public static function dispatch(): void {
 		if (self::$isDispatched) {
@@ -24,28 +24,46 @@ class Router {
 		self::findRoute();
 		
 		if (is_null(self::$route)) {
-			dd('404: Route Not Found'); // TODO: Change to response (404 - Not Found)
+			response() // Not Found
+			->statusCode(404)
+				->message('Address not found! Check your url..')
+				->json()
+				->send(true);
 		}
 		
 		self::getParams();
 		
 		if (!self::isValidMethod(Request::method(), self::$route->method)) {
-			dd('405: Invalid method'); // TODO: Change to response (405 - Method Not Allowed)
+			response() // Method Not Allowed
+			->statusCode(405)
+				->message('Method is invalid, Change it..')
+				->json()
+				->send();
 		}
 		
-		if (!self::executeAction(self::$route->action)) {
-			dd('503'); // TODO: Change to response (503 - Server Unavailable)
+		$result = self::executeAction(self::$route->action);
+		if (!$result) {
+			response() // Service Unavailable
+			->statusCode(503)
+				->message('Something went wrong...')
+				->json()
+				->send();
 		}
+		
+		if (!($result instanceof Response)) {
+			echo is_object($result) || is_array($result) ? json_encode($result) : $result;
+			return;
+		}
+		echo $result->send();
 	}
 	
-	private static function executeAction($action): bool {
+	private static function executeAction($action): mixed {
 		if (empty($action)) {
 			return false;
 		}
 		
 		if (is_callable($action)) {
-			$action(...self::$slugs);
-			return true;
+			return $action(...self::$slugs);
 		}
 		
 		if (is_string($action) && strpos($action, self::STRING_ACTION_SEPRATOR, 1) !== false) {
@@ -56,16 +74,13 @@ class Router {
 			return false;
 		}
 		
-		$className = self::CONTROLLERS_BASE_PATH . $action[0];
-		$methodName = $action[1];
+		[$className, $methodName] = [$action[0], $action[1]];
 		
 		if (!class_exists($className) || !method_exists($className, $methodName)) {
 			return false;
 		}
 		
-		$class = new $className;
-		$class->$methodName(...self::$slugs);
-		return true;
+		return (new $className)->$methodName(...self::$slugs);
 	}
 	
 	private static function findRoute(): void {
