@@ -4,25 +4,25 @@ namespace App\Core;
 
 class Response {
 	private ?string $message = null;
-	private int $statusCode = 200;
-	private array $data = [];
+	private ?int $statusCode = 200;
+	private mixed $data = null;
 	
 	private array $headers = [];
 	
-	public function data(array $data = []): self {
+	public function data(mixed $data): self {
 		$this->data = $data;
 		return $this;
 	}
 	
-	public function statusCode(int $status = 200): self {
-		if (in_array($status, Respond::STATUS_TEXTS, true)) {
+	public function statusCode(int $status): self {
+		if (array_key_exists($status, Respond::STATUS_TEXTS)) {
 			$this->statusCode = $status;
 		}
 		return $this;
 	}
 	
 	public function message(string $message = null): self {
-		$this->message = $message ?: Respond::STATUS_TEXTS[$this->statusCode];
+		$this->message = $message;
 		return $this;
 	}
 	
@@ -91,15 +91,15 @@ class Response {
 	}
 	
 	private function setHeaders(): void {
+		header('HTTP/1.1 ' . $this->statusCode . ' ' . Respond::STATUS_TEXTS[$this->statusCode]);
 		foreach ($this->headers as $name => $val) {
 			header($name . ': ' . $val);
 		}
 	}
 	
-	public function send(bool $exit = false, bool $return = false) {
+	public function send(bool $exit = true, bool $return = false) {
 		$this->setHeaders();
 		$response = json_encode([
-			'status_code' => $this->statusCode,
 			'message' => $this->message,
 			'data' => $this->data
 		]);
