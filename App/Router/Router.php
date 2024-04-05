@@ -3,7 +3,13 @@
 namespace App\Router;
 
 use App\Core\Request;
+use App\Core\Response;
 
+/**
+ * Class Router
+ *
+ * Handles routing for incoming HTTP requests.
+ */
 class Router {
 	private static bool $isDispatched = false;
 	private static ?object $route = null;
@@ -12,8 +18,12 @@ class Router {
 	private static array $slugs = [];
 	
 	public const STRING_ACTION_SEPRATOR = '@';
-	public const CONTROLLERS_BASE_PATH  = 'App\Controllers\\';
 	
+	/**
+	 * Dispatches the request to the appropriate route handler.
+	 *
+	 * @return void
+	 */
 	public static function dispatch(): void {
 		if (self::$isDispatched) {
 			return;
@@ -24,28 +34,53 @@ class Router {
 		self::findRoute();
 		
 		if (is_null(self::$route)) {
-			dd('404: Route Not Found'); // TODO: Change to response (404 - Not Found)
+			response() // Not Found
+			->statusCode(404)
+				->message('Address not found! Check your URL...')
+				->json()
+				->send(true);
 		}
 		
 		self::getParams();
 		
 		if (!self::isValidMethod(Request::method(), self::$route->method)) {
-			dd('405: Invalid method'); // TODO: Change to response (405 - Method Not Allowed)
+			response() // Method Not Allowed
+			->statusCode(405)
+				->message('Method is invalid. Change it...')
+				->json()
+				->send();
 		}
 		
-		if (!self::executeAction(self::$route->action)) {
-			dd('503'); // TODO: Change to response (503 - Server Unavailable)
+		$result = self::executeAction(self::$route->action);
+		if (!$result) {
+			response() // Service Unavailable
+			->statusCode(503)
+				->message('Something went wrong...')
+				->json()
+				->send();
 		}
+		
+		if (!($result instanceof Response)) {
+			echo is_object($result) || is_array($result) ? json_encode($result) : $result;
+			return;
+		}
+		echo $result->send();
 	}
 	
-	private static function executeAction($action): bool {
+	/**
+	 * Executes the action associated with the route.
+	 *
+	 * @param mixed $action The action to execute.
+	 *
+	 * @return mixed The result of the action execution.
+	 */
+	private static function executeAction($action): mixed {
 		if (empty($action)) {
 			return false;
 		}
 		
 		if (is_callable($action)) {
-			$action(...self::$slugs);
-			return true;
+			return $action(...self::$slugs);
 		}
 		
 		if (is_string($action) && strpos($action, self::STRING_ACTION_SEPRATOR, 1) !== false) {
@@ -56,18 +91,20 @@ class Router {
 			return false;
 		}
 		
-		$className = self::CONTROLLERS_BASE_PATH . $action[0];
-		$methodName = $action[1];
+		[$className, $methodName] = [$action[0], $action[1]];
 		
 		if (!class_exists($className) || !method_exists($className, $methodName)) {
 			return false;
 		}
 		
-		$class = new $className;
-		$class->$methodName(...self::$slugs);
-		return true;
+		return (new $className)->$methodName(...self::$slugs);
 	}
 	
+	/**
+	 * Finds the matching route for the current request.
+	 *
+	 * @return void
+	 */
 	private static function findRoute(): void {
 		if (!is_null(self::$route)) {
 			return;
@@ -98,6 +135,11 @@ class Router {
 		static::$slugs = $foundSlugs;
 	}
 	
+	/**
+	 * Retrieves parameters from the request.
+	 *
+	 * @return void
+	 */
 	private static function getParams(): void {
 		if (!is_null(self::$params)) {
 			return;
@@ -106,6 +148,13 @@ class Router {
 		self::$params = Request::fullParams();
 	}
 	
+	/**
+	 * Retrieves routes filtered by method.
+	 *
+	 * @param string|null $method The HTTP method to filter routes by.
+	 *
+	 * @return array The filtered routes.
+	 */
 	public static function getRoutes(?string $method = null): array {
 		if (!self::$routes) {
 			self::$routes = Route::getRoutes();
@@ -120,7 +169,15 @@ class Router {
 		});
 	}
 	
-	private static function isValidMethod($request_method, $route_methods): bool {
+	/**
+	 * Checks if the request method is valid for the route.
+	 *
+	 * @param string $request_method The HTTP request method.
+	 * @param array $route_methods The allowed methods for the route.
+	 *
+	 * @return bool True if the method is valid, false otherwise.
+	 */
+	private static function isValidMethod(string $request_method, array $route_methods): bool {
 		return in_array($request_method, $route_methods, true);
 	}
 }

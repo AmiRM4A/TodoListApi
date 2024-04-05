@@ -6,17 +6,17 @@ use App\Router\Router;
 require '../vendor/autoload.php';
 require './autoloader.php';
 
-# Loading dotenv variables
+# Load dotenv variables
 $dotenv = new Symfony\Component\Dotenv\Dotenv();
-$dotenv->load(__DIR__ . '/.env');
+$dotenv->load(dirname(__DIR__, 1) . '/.env');
 
 require './config.php';
 require PROJ_DIR . str_replace('/', DIRECTORY_SEPARATOR, '/App/Helpers/helpers.php');
 require PROJ_DIR . str_replace('/', DIRECTORY_SEPARATOR, '/App/Helpers/Security.php');
 require PROJ_DIR . str_replace('/', DIRECTORY_SEPARATOR, '/App/Helpers/Str.php');
 
-# Routes
+# Include route definitions
 require PROJ_DIR . str_replace('/', DIRECTORY_SEPARATOR, '/App/Router/Routes/api.php');
 
-# Routing
+# Dispatch routing
 Router::dispatch();

@@ -1,10 +1,24 @@
 <?php
 
 use App\Core\Request;
+use App\Core\Response;
 use App\Helpers\UserAgent;
 
+/**
+ * Custom Utility Functions
+ *
+ * This file defines custom utility functions for debugging, error handling, and HTTP response creation.
+ */
+
 if (!function_exists('dump')) {
-	function dump($output): void {
+	/**
+	 * Dump variable contents for debugging.
+	 *
+	 * @param mixed $output The variable to be dumped.
+	 *
+	 * @return void
+	 */
+	function dump(mixed $output): void {
 		$trace = debug_backtrace();
 		$caller = array_shift($trace);
 		
@@ -16,20 +30,50 @@ if (!function_exists('dump')) {
 }
 
 if (!function_exists('dd')) {
-	function dd($output): void {
+	/**
+	 * Dump variable contents and halt execution.
+	 *
+	 * @param mixed $output The variable to be dumped.
+	 *
+	 * @return void
+	 */
+	function dd(mixed $output): void {
 		dump($output);
 		die;
 	}
 }
 
 if (!function_exists('sendFatalError')) {
-	function sendFatalError($message = 'A fatal error occurred!'): void {
+	/**
+	 * Send a fatal error message.
+	 *
+	 * @param string $message The error message.
+	 *
+	 * @return void
+	 */
+	function sendFatalError(string $message = 'A fatal error occurred!'): void {
 		trigger_error($message, E_USER_ERROR);
 	}
 }
 
 if (!function_exists('agent')) {
+	/**
+	 * Get the UserAgent object from the current request.
+	 *
+	 * @return UserAgent The UserAgent object.
+	 */
 	function agent(): UserAgent {
 		return Request::agent();
+	}
+}
+
+if (!function_exists('response')) {
+	/**
+	 * Create a new Response object.
+	 *
+	 * @return Response A new Response object.
+	 */
+	function response(): object {
+		return new Response();
 	}
 }

@@ -4,12 +4,23 @@ namespace App\Helpers;
 
 use InvalidArgumentException;
 
+/**
+ * Class Security
+ *
+ * Provides methods for sanitizing input data.
+ */
 class Security {
-	public static function cleanInputData($input_array, $filters = [], $exclude_keys = []): false|array|null {
-		if (!is_array($input_array)) {
-			throw new InvalidArgumentException("Input must be an array");
-		}
-		
+	/**
+	 * Clean input data based on specified filters.
+	 *
+	 * @param array $input_array The input data to be sanitized.
+	 * @param int|array $filters The filter to apply to the input data. Default is FILTER_UNSAFE_RAW.
+	 * @param array $exclude_keys Keys to exclude from the cleaned data.
+	 *
+	 * @return array|false|null The cleaned input data, or false if filtering fails.
+	 * @throws InvalidArgumentException If the input is not an array.
+	 */
+	public static function cleanInputData(array $input_array, int|array $filters = [], array $exclude_keys = []): false|array|null {
 		$filters = empty($filters) ? FILTER_UNSAFE_RAW : $filters;
 		
 		$cleaned_data = filter_var_array($input_array, $filters, true);
