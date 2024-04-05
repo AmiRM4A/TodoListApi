@@ -2,21 +2,27 @@
 
 use App\Router\Route;
 
-# API Routes Would Be Here...
+/**
+ * Define API Routes
+ *
+ * This section declares routes for the API endpoints.
+ */
 
 ## Route ##
-# Declaring Route Names:
-# Static: tasks (domain.com/tasks)
-# Dynamic(Slug): tasks/{task_id} (domain.com/tasks/2(task_id))
-# Custom regex for each route slug by using ->where('param_name', 'regex'):
+# Define Route Names:
+# Static: Use just the route name (e.g., domain.com/tasks)
+# Dynamic (Slug): Specify dynamic segments using curly braces (e.g., domain.com/tasks/{task_id})
+# Customize regex for dynamic segments with ->where('param_name', 'regex'):
 # ----------------------------------------------------------------
 ## Method ##
-# String => 'Controller@Method'
-# Array => ['Controller' , 'Method']
-# Callable => Just pass an anonymous function
+# Specify the method to handle the route:
+# String: 'Controller@Method'
+# Array: ['Controller' , 'Method']
+# Callable: Use an anonymous function directly
 # ----------------------------------------------------------------
 ## Action ##
-# You can generate response by response class. returning or sending response directly (with ->send method of response class) is available
+# Responses can be generated using the response class. You can either return the response or send it directly using the ->send method of the response class.
+
 Route::new('/', ['get', 'post'], function () {
-	return 'Welcome to Api';
+	return response()->message('Welcome to the API')->json();
 });
