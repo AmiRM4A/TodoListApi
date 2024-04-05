@@ -8,7 +8,7 @@ require './autoloader.php';
 
 # Loading dotenv variables
 $dotenv = new Symfony\Component\Dotenv\Dotenv();
-$dotenv->load(__DIR__ . '/.env');
+$dotenv->load(dirname(__DIR__, 1) . '/.env');
 
 require './config.php';
 require PROJ_DIR . str_replace('/', DIRECTORY_SEPARATOR, '/App/Helpers/helpers.php');
