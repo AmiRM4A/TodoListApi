@@ -46,7 +46,7 @@ class Router {
 		if (!self::isValidMethod(Request::method(), self::$route->method)) {
 			response() // Method Not Allowed
 			->statusCode(405)
-				->message('Method is invalid. Change it...')
+				->message(DEV_MODE ? 'Method Not Allowed... (Available Methods: ' . implode(' - ', self::$route->method()) . ')' : 'Method Not Allowed')
 				->json()
 				->send();
 		}

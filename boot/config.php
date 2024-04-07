@@ -1,6 +1,7 @@
 <?php
 
 define('PROJ_DIR', dirname(__FILE__, 2));
+define('DEV_MODE', 0);
 
 # Database
 define('DB_TYPE', $_ENV['DB_TYPE']);
