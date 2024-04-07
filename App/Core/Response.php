@@ -218,12 +218,11 @@ class Response {
 	/**
 	 * Send the HTTP response.
 	 *
-	 * @param bool $exit Whether to exit after sending the response. Defaults to true.
 	 * @param bool $return Whether to return the response instead of outputting it. Defaults to false.
 	 *
 	 * @return void|string The response if $return is true.
 	 */
-	public function send(bool $exit = true, bool $return = false) {
+	public function send(bool $return = false) {
 		$this->setHeaders();
 		$response = json_encode([
 			'message' => $this->message,
@@ -235,9 +234,6 @@ class Response {
 		}
 		
 		echo $response;
-		
-		if ($exit) {
-			exit;
-		}
+		exit;
 	}
 }

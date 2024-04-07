@@ -4,6 +4,7 @@ namespace App\Router;
 
 use App\Core\Request;
 use App\Core\Response;
+use App\Exceptions\RouterException;
 
 /**
  * Class Router
@@ -23,6 +24,7 @@ class Router {
 	 * Dispatches the request to the appropriate route handler.
 	 *
 	 * @return void
+	 * @throws RouterException
 	 */
 	public static function dispatch(): void {
 		if (self::$isDispatched) {
@@ -38,7 +40,7 @@ class Router {
 			->statusCode(404)
 				->message('Address not found! Check your URL...')
 				->json()
-				->send(true);
+				->send();
 		}
 		
 		self::getParams();
@@ -51,20 +53,19 @@ class Router {
 				->send();
 		}
 		
-		$result = self::executeAction(self::$route->action);
-		if (!$result) {
-			response() // Service Unavailable
+		try {
+			$result = self::executeAction(self::$route->action);
+		} catch (RouterException $e) {
+			$result = response() // Service Unavailable
 			->statusCode(503)
-				->message('Something went wrong...')
-				->json()
-				->send();
+				->message(DEV_MODE ? $e->getmessage() : 'Something went wrong...')
+				->json();
 		}
 		
-		if (!($result instanceof Response)) {
-			echo is_object($result) || is_array($result) ? json_encode($result) : $result;
-			return;
+		if ($result instanceof Response) {
+			echo $result->send();
 		}
-		echo $result->send();
+		echo is_object($result) || is_array($result) ? json_encode($result) : $result;
 	}
 	
 	/**
@@ -73,10 +74,11 @@ class Router {
 	 * @param mixed $action The action to execute.
 	 *
 	 * @return mixed The result of the action execution.
+	 * @throws RouterException
 	 */
-	private static function executeAction($action): mixed {
+	private static function executeAction(mixed $action): mixed {
 		if (empty($action)) {
-			return false;
+			throw new RouterException('Action is empty');
 		}
 		
 		if (is_callable($action)) {
@@ -88,13 +90,13 @@ class Router {
 		}
 		
 		if (!is_array($action) || empty($action)) {
-			return false;
+			throw new RouterException('The action did not exploded');
 		}
 		
 		[$className, $methodName] = [$action[0], $action[1]];
 		
 		if (!class_exists($className) || !method_exists($className, $methodName)) {
-			return false;
+			throw new RouterException('Class or method not found!');
 		}
 		
 		return (new $className)->$methodName(...self::$slugs);
