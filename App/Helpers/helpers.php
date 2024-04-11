@@ -138,4 +138,17 @@ if (!function_exists('rawParam')) {
 		return Request::rawParam($key);
 	}
 }
+
+/**
+ * Create a new Request object.
+ *
+ * This function creates and returns a new `Request` object, which can be used to interact with the current
+ * HTTP request.
+ *
+ * @return Request A new Request object.
+ */
+if (!function_exists('request')) {
+	function request(): object {
+		return new Request();
+	}
 }
