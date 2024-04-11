@@ -14,7 +14,9 @@ class Request {
 	/**
 	 * Get the HTTP request method.
 	 *
-	 * @return string The request method (e.g., GET, POST, etc.).
+	 * This method returns the HTTP request method, such as "GET", "POST", "PUT", "DELETE", etc.
+	 *
+	 * @return string The request method.
 	 */
 	public static function method(): string {
 		return $_SERVER['REQUEST_METHOD'];
@@ -22,6 +24,8 @@ class Request {
 	
 	/**
 	 * Get the full URI of the request.
+	 *
+	 * This method returns the full URI of the current request, including the query string.
 	 *
 	 * @return string The full URI of the request.
 	 */
@@ -31,6 +35,8 @@ class Request {
 	
 	/**
 	 * Get the URI path of the request.
+	 *
+	 * This method returns the URI path of the current request, excluding the query string.
 	 *
 	 * @return string The URI path of the request.
 	 */
@@ -45,6 +51,8 @@ class Request {
 	/**
 	 * Get the host name of the request.
 	 *
+	 * This method returns the host name of the current request.
+	 *
 	 * @return string The host name of the request.
 	 */
 	public static function host(): string {
@@ -54,7 +62,9 @@ class Request {
 	/**
 	 * Get the POST data of the request after sanitization.
 	 *
-	 * @return array|bool The sanitized POST data.
+	 * This method returns the POST data of the current request, with the input data being sanitized.
+	 *
+	 * @return array|bool The sanitized POST data, or false if the data cannot be parsed.
 	 */
 	public static function post(): array|bool {
 		return Security::cleanInputData($_POST, FILTER_UNSAFE_RAW);
@@ -63,7 +73,9 @@ class Request {
 	/**
 	 * Get the GET data of the request after sanitization.
 	 *
-	 * @return array|bool The sanitized GET data.
+	 * This method returns the GET data of the current request, with the input data being sanitized.
+	 *
+	 * @return array|bool The sanitized GET data, or false if the data cannot be parsed.
 	 */
 	public static function get(): array|bool {
 		return Security::cleanInputData($_GET, FILTER_UNSAFE_RAW);
@@ -95,6 +107,9 @@ class Request {
 	
 	/**
 	 * Get a parameter value from the request.
+	 *
+	 * This method retrieves the value of a parameter from the current request, with a default value
+	 * provided if the parameter is not found.
 	 *
 	 * @param string $key The parameter key.
 	 * @param mixed|null $default The default value if the parameter is not found.
@@ -153,6 +168,8 @@ class Request {
 	/**
 	 * Get the IP address of the client.
 	 *
+	 * This method returns the IP address of the client making the current request.
+	 *
 	 * @return string The IP address of the client.
 	 */
 	public static function ip(): string {
@@ -169,6 +186,8 @@ class Request {
 	
 	/**
 	 * Get the User-Agent object representing the client's user agent.
+	 *
+	 * This method returns a `UserAgent` object representing the client's user agent information.
 	 *
 	 * @return object The User-Agent object.
 	 */
