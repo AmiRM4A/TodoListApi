@@ -2,6 +2,7 @@
 
 namespace App\Router;
 
+use Exception;
 use App\Core\Request;
 use App\Core\Response;
 use App\Exceptions\RouterException;
@@ -18,13 +19,13 @@ class Router {
 	private static ?array $params = null;
 	private static array $slugs = [];
 	
-	public const STRING_ACTION_SEPRATOR = '@';
+	private const STRING_ACTION_SEPRATOR = '@';
+	private const CONTROLLER_BASE_PATH   = 'App\Controllers\\';
 	
 	/**
 	 * Dispatches the request to the appropriate route handler.
 	 *
 	 * @return void
-	 * @throws RouterException
 	 */
 	public static function dispatch(): void {
 		if (self::$isDispatched) {
@@ -48,22 +49,25 @@ class Router {
 		if (!self::isValidMethod(Request::method(), self::$route->method)) {
 			response() // Method Not Allowed
 			->statusCode(405)
-				->message(DEV_MODE ? 'Method Not Allowed... (Available Methods: ' . implode(' - ', self::$route->method()) . ')' : 'Method Not Allowed')
+				->message(DEV_MODE ? 'Method Not Allowed... (Available Methods: ' . implode(' - ', self::$route->method) . ')' : 'Method Not Allowed')
 				->json()
 				->send();
 		}
 		
 		try {
 			$result = self::executeAction(self::$route->action);
-		} catch (RouterException $e) {
-			$result = response() // Service Unavailable
-			->statusCode(503)
-				->message(DEV_MODE ? $e->getmessage() : 'Something went wrong...')
-				->json();
+		} catch (RouterException $e) { // Service Unavailable
+			$result = response()
+				->statusCode(503)
+				->message(DEV_MODE ? $e->getmessage() : 'Something went wrong...');
+		} catch (Exception $e) { // Change the position of this exception
+			$result = response()
+				->statusCode(503)
+				->message($e->getmessage());
 		}
 		
 		if ($result instanceof Response) {
-			echo $result->send();
+			echo $result->json()->send();
 		}
 		echo is_object($result) || is_array($result) ? json_encode($result) : $result;
 	}
@@ -93,7 +97,7 @@ class Router {
 			throw new RouterException('The action did not exploded');
 		}
 		
-		[$className, $methodName] = [$action[0], $action[1]];
+		[$className, $methodName] = [self::CONTROLLER_BASE_PATH . $action[0], $action[1]];
 		
 		if (!class_exists($className) || !method_exists($className, $methodName)) {
 			throw new RouterException('Class or method not found!');
@@ -147,7 +151,7 @@ class Router {
 			return;
 		}
 		
-		self::$params = Request::fullParams();
+		self::$params = Request::params();
 	}
 	
 	/**

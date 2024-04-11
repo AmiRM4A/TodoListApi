@@ -20,9 +20,9 @@ class DB {
 	/**
 	 * Get the Medoo database query instance.
 	 *
-	 * @return Medoo The Medoo database query instance.
+	 * @return Medoo|null The Medoo database query instance.
 	 */
-	public static function q(): Medoo {
+	public static function q(): ?Medoo {
 		self::connect();
 		return self::$connection;
 	}
