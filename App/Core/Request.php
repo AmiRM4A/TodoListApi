@@ -70,20 +70,25 @@ class Request {
 	}
 	
 	/**
-	 * Get all parameters (GET and POST) of the request after sanitization.
+	 * Get all parameters (GET, POST, and body) of the request after sanitization.
+	 *
+	 * This method returns an array containing all the sanitized parameters from the current request,
+	 * including GET, POST, and raw request body parameters.
 	 *
 	 * @return array All sanitized parameters.
 	 */
 	public static function params(): array {
-		return array_merge(self::get(), self::post());
+		return array_merge(self::get(), self::post(), self::rawParams());
 	}
 	
 	/**
-	 * Get the body parameters of the request.
+	 * Get the raw params.
+	 *
+	 * This method returns the raw request body parameters.
 	 *
 	 * @return array The body parameters of the request.
 	 */
-	public static function bodyParams(): array {
+	public static function rawParams(): array {
 		parse_str(file_get_contents('php://input'), $body);
 		return $body;
 	}
@@ -103,13 +108,46 @@ class Request {
 	/**
 	 * Get a body parameter value from the request.
 	 *
+	 * This method retrieves the value of a raw request body parameter, with a default value
+	 * provided if the parameter is not found.
+	 *
 	 * @param string $key The parameter key.
 	 * @param mixed|null $default The default value if the parameter is not found.
 	 *
 	 * @return mixed The body parameter value or the default value.
 	 */
+	public static function rawParam(string $key, mixed $default = null): mixed {
+		return self::rawParams()[$key] ?? $default;
+	}
+	
+	/**
+	 * Get a query parameter value from the request.
+	 *
+	 * This method retrieves the value of a query parameter, with a default value
+	 * provided if the parameter is not found.
+	 *
+	 * @param string $key The parameter key.
+	 * @param mixed|null $default The default value if the parameter is not found.
+	 *
+	 * @return mixed The query parameter value or the default value.
+	 */
+	public static function queryParam(string $key, mixed $default = null): mixed {
+		return self::get()[$key] ?? $default;
+	}
+	
+	/**
+	 * Get a request body parameter value from the request.
+	 *
+	 * This method retrieves the value of a request body parameter, with a default value
+	 * provided if the parameter is not found.
+	 *
+	 * @param string $key The parameter key.
+	 * @param mixed|null $default The default value if the parameter is not found.
+	 *
+	 * @return mixed The request body parameter value or the default value.
+	 */
 	public static function bodyParam(string $key, mixed $default = null): mixed {
-		return self::bodyParams()[$key] ?? $default;
+		return self::post() ?? $default;
 	}
 	
 	/**
@@ -139,23 +177,15 @@ class Request {
 	}
 	
 	/**
-	 * Get all parameters (GET, POST, and body) of the request after sanitization.
-	 *
-	 * @return array All sanitized parameters.
-	 */
-	public static function fullParams(): array {
-		return array_merge(self::params(), self::bodyParams());
-	}
-	
-	/**
 	 * Magic method to dynamically get parameters as properties of the request object.
+	 *
+	 * This method allows you to access request parameters as properties of the `Request` object.
 	 *
 	 * @param string $name The parameter name.
 	 *
 	 * @return mixed|null The parameter value or null if not found.
 	 */
 	public function __get(string $name) {
-		$args = self::fullParams();
-		return $args[$name] ?? null;
+		return self::params()[$name] ?? null;
 	}
 }
