@@ -19,6 +19,7 @@ class Router {
 	private static array $slugs = [];
 	
 	public const STRING_ACTION_SEPRATOR = '@';
+	private const CONTROLLER_BASE_PATH   = 'App\Controllers\\';
 	
 	/**
 	 * Dispatches the request to the appropriate route handler.
@@ -93,7 +94,7 @@ class Router {
 			throw new RouterException('The action did not exploded');
 		}
 		
-		[$className, $methodName] = [$action[0], $action[1]];
+		[$className, $methodName] = [self::CONTROLLER_BASE_PATH . $action[0], $action[1]];
 		
 		if (!class_exists($className) || !method_exists($className, $methodName)) {
 			throw new RouterException('Class or method not found!');
