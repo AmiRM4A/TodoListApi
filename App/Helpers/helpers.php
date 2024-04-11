@@ -77,3 +77,65 @@ if (!function_exists('response')) {
 		return new Response();
 	}
 }
+
+/**
+ * Retrieve a parameter value from the current request.
+ *
+ * This function retrieves the value of a parameter from the current request. It likely abstracts the process
+ * of accessing request parameters, query parameters, request body parameters, and raw request data.
+ *
+ * @param string $key The key of the parameter to be retrieved.
+ *
+ * @return mixed The value of the requested parameter.
+ */
+if (!function_exists('param')) {
+	function param($key): mixed {
+		return Request::param($key);
+	}
+}
+
+/**
+ * Retrieve a query parameter value from the current request.
+ *
+ * This function retrieves the value of a query parameter from the current request.
+ *
+ * @param string $key The key of the query parameter to be retrieved.
+ *
+ * @return mixed The value of the requested query parameter.
+ */
+if (!function_exists('queryParam')) {
+	function queryParam(string $key): mixed {
+		return Request::queryParam($key);
+	}
+}
+
+/**
+ * Retrieve a request body parameter value from the current request.
+ *
+ * This function retrieves the value of a request body parameter from the current request.
+ *
+ * @param string $key The key of the request body parameter to be retrieved.
+ *
+ * @return mixed The value of the requested request body parameter.
+ */
+if (!function_exists('bodyParam')) {
+	function bodyParam(string $key): mixed {
+		return Request::bodyParam($key);
+	}
+}
+
+/**
+ * Retrieve a raw parameter value from the current request.
+ *
+ * This function retrieves the value of a raw parameter from the current request.
+ *
+ * @param string $key The key of the raw parameter to be retrieved.
+ *
+ * @return mixed The value of the requested raw parameter.
+ */
+if (!function_exists('rawParam')) {
+	function rawParam(string $key): mixed {
+		return Request::rawParam($key);
+	}
+}
+}
