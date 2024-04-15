@@ -162,7 +162,7 @@ class Request {
 	 * @return mixed The request body parameter value or the default value.
 	 */
 	public static function bodyParam(string $key, mixed $default = null): mixed {
-		return self::post() ?? $default;
+		return self::post()[$key] ?? $default;
 	}
 	
 	/**
