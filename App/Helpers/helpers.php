@@ -167,3 +167,20 @@ if (!function_exists('request')) {
 		return new Request();
 	}
 }
+
+/**
+ * Apply a callback to a value and return the value.
+ *
+ * This function applies a callback to a value and returns the value, allowing for method chaining and functional
+ * programming techniques.
+ *
+ * @param mixed $value The value to be passed to the callback.
+ * @param callable $callback The callback function to be applied to the value.
+ *
+ * @return mixed The original value, after the callback has been applied.
+ */
+if (!function_exists('tap')) {
+	function tap(mixed $value, callable $callback): mixed {
+		return $callback($value);
+	}
+}
