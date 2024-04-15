@@ -70,7 +70,6 @@ abstract class Model implements ModelInterface {
 	 * @throws DBException
 	 */
 	public static function insert(array $data): int|bool|null {
-		dump($data);
 		if (empty($data)) {
 			return null;
 		}
@@ -100,7 +99,6 @@ abstract class Model implements ModelInterface {
 		if (empty($data) || empty($where)) {
 			return false;
 		}
-		
 		
 		try {
 			DB::q()->update(static::tableName(), $data, $where);
