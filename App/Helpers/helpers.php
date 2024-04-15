@@ -7,7 +7,7 @@ use App\Helpers\UserAgent;
 /**
  * Custom Utility Functions
  *
- * This file defines custom utility functions for debugging, error handling, and HTTP response creation.
+ * This file defines a set of custom utility functions for debugging, error handling, and HTTP response creation.
  */
 
 /**
@@ -85,11 +85,14 @@ if (!function_exists('agent')) {
  * This function creates and returns a new `Response` object, which can be used to construct and send HTTP
  * responses from the application.
  *
+ * @param int|null $code The HTTP status code for the response.
+ * @param string|null $message The message to be included in the response.
+ *
  * @return Response A new Response object.
  */
 if (!function_exists('response')) {
-	function response(): object {
-		return new Response();
+	function response(?int $code = null, ?string $message = null): Response {
+		return (new Response())->statusCode($code)->message($message);
 	}
 }
 
@@ -100,12 +103,13 @@ if (!function_exists('response')) {
  * of accessing request parameters, query parameters, request body parameters, and raw request data.
  *
  * @param string $key The key of the parameter to be retrieved.
+ * @param mixed $default The default value to be returned if the parameter is not found.
  *
- * @return mixed The value of the requested parameter.
+ * @return mixed The value of the requested parameter, or the default value if not found.
  */
 if (!function_exists('param')) {
-	function param($key): mixed {
-		return Request::param($key);
+	function param(string $key, mixed $default = null): mixed {
+		return Request::param($key, $default);
 	}
 }
 
@@ -115,12 +119,13 @@ if (!function_exists('param')) {
  * This function retrieves the value of a query parameter from the current request.
  *
  * @param string $key The key of the query parameter to be retrieved.
+ * @param mixed $default The default value to be returned if the query parameter is not found.
  *
- * @return mixed The value of the requested query parameter.
+ * @return mixed The value of the requested query parameter, or the default value if not found.
  */
 if (!function_exists('queryParam')) {
-	function queryParam(string $key): mixed {
-		return Request::queryParam($key);
+	function queryParam(string $key, mixed $default = null): mixed {
+		return Request::queryParam($key, $default);
 	}
 }
 
@@ -130,12 +135,13 @@ if (!function_exists('queryParam')) {
  * This function retrieves the value of a request body parameter from the current request.
  *
  * @param string $key The key of the request body parameter to be retrieved.
+ * @param mixed $default The default value to be returned if the request body parameter is not found.
  *
- * @return mixed The value of the requested request body parameter.
+ * @return mixed The value of the requested request body parameter, or the default value if not found.
  */
 if (!function_exists('bodyParam')) {
-	function bodyParam(string $key): mixed {
-		return Request::bodyParam($key);
+	function bodyParam(string $key, mixed $default = null): mixed {
+		return Request::bodyParam($key, $default);
 	}
 }
 
@@ -145,12 +151,13 @@ if (!function_exists('bodyParam')) {
  * This function retrieves the value of a raw parameter from the current request.
  *
  * @param string $key The key of the raw parameter to be retrieved.
+ * @param mixed $default The default value to be returned if the raw parameter is not found.
  *
- * @return mixed The value of the requested raw parameter.
+ * @return mixed The value of the requested raw parameter, or the default value if not found.
  */
 if (!function_exists('rawParam')) {
-	function rawParam(string $key): mixed {
-		return Request::rawParam($key);
+	function rawParam(string $key, mixed $default = null): mixed {
+		return Request::rawParam($key, $default);
 	}
 }
 
@@ -163,7 +170,7 @@ if (!function_exists('rawParam')) {
  * @return Request A new Request object.
  */
 if (!function_exists('request')) {
-	function request(): object {
+	function request(): Request {
 		return new Request();
 	}
 }
