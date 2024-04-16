@@ -51,11 +51,15 @@ class TaskController {
 		$title = sanitizeStr(bodyParam('title'));
 		$description = sanitizeStr(bodyParam('description', ''));
 		$status = sanitizeStr(bodyParam('status', 'Uncompleted'));
-		$createdBy = bodyParam('created_by', 1);
+		$createdBy = bodyParam('created_by', 1);//TODO: Delete default value when you write the login/register part
 		$updatedAt = currentTime();
 		
 		if (empty($title)) {
 			return response(400, 'Invalid title');
+		}
+		
+		if (empty($createdBy)) {
+			return response(400, 'Invalid Creator');
 		}
 		
 		return Task::insert([
