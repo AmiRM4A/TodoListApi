@@ -191,3 +191,18 @@ if (!function_exists('tap')) {
 		return $callback($value);
 	}
 }
+
+/**
+ * Get the current time.
+ *
+ * This function returns the current time in the format 'Y-m-d H:i:s'.
+ *
+ * @return string The current time.
+ */
+if (!function_exists('currentTime')) {
+	function currentTime(): string {
+		return date('Y-m-d H:i:s');
+	}
+}
+
+}
