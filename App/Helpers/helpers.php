@@ -205,4 +205,18 @@ if (!function_exists('currentTime')) {
 	}
 }
 
+/**
+ * Check if a given string is a valid email address.
+ *
+ * This function uses a regular expression to validate the format of the input email address.
+ *
+ * @param string $email The email address to be validated.
+ *
+ * @return bool True if the email address is valid, false otherwise.
+ */
+if (!function_exists('isEmail')) {
+	function isEmail(string $email): bool {
+		return preg_match('/[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}/', $email);
+	}
+}
 }
