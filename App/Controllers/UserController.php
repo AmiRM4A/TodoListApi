@@ -80,13 +80,17 @@ class UserController {
 			return response(400, 'Username or email already exists!');
 		}
 		
+		$salt = bin2hex(random_bytes(16));
+		$hashedPassword = md5($password . $salt);
+		
 		return User::insert([
 			'name' => $name,
 			'user_name' => $userName,
-			'password' => $password,
+			'password' => $hashedPassword,
 			'email' => $email,
 			'last_login' => currentTime(), // TODO: Change it to last login time (When user logged in, update it)
-			'last_ip' => $ip
+			'last_ip' => $ip,
+			'salt' => $salt
 		]);
 	}
 	
@@ -123,11 +127,12 @@ class UserController {
 			return response(404, 'User(' . $id . ') not found!');
 		}
 		
+		$salt = $user['salt'];
 		$updatedData = [];
-		$name = sanitizeStr(bodyParam('name'));
-		$userName = sanitizeStr(bodyParam('user_name'));
-		$password = sanitizeStr(bodyParam('password'));
-		$email = sanitizeStr(bodyParam('email'));
+		$name = sanitizeStr(rawParam('name'));
+		$userName = sanitizeStr(rawParam('user_name'));
+		$password = sanitizeStr(rawParam('password'));
+		$email = sanitizeStr(rawParam('email'));
 		
 		if ($name && $user['name'] !== $name) {
 			$updatedData['name'] = $name;
@@ -137,14 +142,20 @@ class UserController {
 			$updatedData['user_name'] = $userName;
 		}
 		
-		if ($password && $user['password'] !== $password) {
-			$updatedData['password'] = $password;
+		if ($password && $user['password'] !== md5($password . $salt)) {
+			$salt = bin2hex(random_bytes(16));
+			$updatedData['salt'] = $salt;
+			$newHashedPassword = md5($password . $salt);
+			$updatedData['password'] = $newHashedPassword;
 		}
 		
 		if ($email && $user['email'] !== $email) {
 			$updatedData['email'] = $email;
 		}
 		
-		return User::update($updatedData, ['id' => $id]);
+		if (!empty($updatedData)) {
+			return User::update($updatedData, ['id' => $id]);
+		}
+		return response(200, 'Nothing to update');
 	}
 }

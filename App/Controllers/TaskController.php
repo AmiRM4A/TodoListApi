@@ -105,9 +105,9 @@ class TaskController {
 		}
 		
 		$updatedData = [];
-		$title = sanitizeStr(bodyParam('title'));
-		$description = sanitizeStr(bodyParam('description'));
-		$status = sanitizeStr(bodyParam('status'));
+		$title = sanitizeStr(rawParam('title'));
+		$description = sanitizeStr(rawParam('description'));
+		$status = sanitizeStr(rawParam('status'));
 		
 		if ($title && $task['title'] !== $title) {
 			$updatedData['title'] = $title;
