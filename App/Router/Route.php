@@ -53,7 +53,7 @@ class Route {
 	 * @param callable|array|string $action The action to be performed when the route is matched.
 	 */
 	public function __construct(string $route, array|string $method, callable|array|string $action) {
-		$this->route = $route;
+		$this->route = strtolower($route);
 		$this->method = (array) Str::toUpperCase($method);
 		$this->action = $action;
 		static::add($this);
@@ -177,13 +177,13 @@ class Route {
 	/**
 	 * Magic method to access properties dynamically.
 	 *
-	 * @param string $route The property name.
+	 * @param string $name The property name.
 	 *
 	 * @return mixed|null The value of the property, or null if the property does not exist.
 	 */
-	public function __get(string $route): mixed {
-		if (property_exists($this, $route)) {
-			return $this->$route;
+	public function __get(string $name): mixed {
+		if (property_exists($this, $name)) {
+			return $this->$name;
 		}
 		return null;
 	}

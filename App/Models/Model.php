@@ -2,14 +2,16 @@
 
 namespace App\Models;
 
-use \Exception;
+use Throwable;
+use App\Exceptions\DBException;
+use App\Exceptions\ModelException;
 
 /**
- * Class BaseModel
+ * Class Model
  *
  * Abstract base model class providing common database operations.
  */
-abstract class BaseModel implements BaseModelInterface {
+abstract class Model implements ModelInterface {
 	/**
 	 * Retrieve data from the database.
 	 *
@@ -17,6 +19,8 @@ abstract class BaseModel implements BaseModelInterface {
 	 * @param array|null $where The WHERE clause conditions.
 	 *
 	 * @return array|null The retrieved data or null on failure.
+	 * @throws ModelException
+	 * @throws DBException
 	 */
 	public static function get(string|array $column, $where = null): array|null {
 		if (empty($column)) {
@@ -25,8 +29,10 @@ abstract class BaseModel implements BaseModelInterface {
 		
 		try {
 			return DB::q()->get(static::tableName(), $column, $where);
-		} catch (Exception) {
-			return null;
+		} catch (DBException $e) {
+			throw $e;
+		} catch (Throwable $e) {
+			throw new ModelException($e->getMessage(), $e->getCode());
 		}
 	}
 	
@@ -37,6 +43,8 @@ abstract class BaseModel implements BaseModelInterface {
 	 * @param array|null $where The WHERE clause conditions.
 	 *
 	 * @return array|null The selected data or null on failure.
+	 * @throws DBException
+	 * @throws ModelException
 	 */
 	public static function select(string|array $column, array $where = null): array|null {
 		if (empty($column)) {
@@ -45,8 +53,10 @@ abstract class BaseModel implements BaseModelInterface {
 		
 		try {
 			return DB::q()->select(static::tableName(), $column, $where);
-		} catch (Exception) {
-			return null;
+		} catch (DBException $e) {
+			throw $e;
+		} catch (Throwable $e) {
+			throw new ModelException($e->getMessage(), $e->getCode());
 		}
 	}
 	
@@ -56,6 +66,8 @@ abstract class BaseModel implements BaseModelInterface {
 	 * @param array $data The data to insert.
 	 *
 	 * @return int|bool|null The inserted row ID, false on failure, or null for empty data.
+	 * @throws ModelException
+	 * @throws DBException
 	 */
 	public static function insert(array $data): int|bool|null {
 		if (empty($data)) {
@@ -63,10 +75,13 @@ abstract class BaseModel implements BaseModelInterface {
 		}
 		
 		try {
-			DB::q()->insert(static::tableName(), $data, static::primaryKey());
-			return DB::q()->id();
-		} catch (Exception) {
-			return false;
+			$db = DB::q();
+			$db->insert(static::tableName(), $data, static::primaryKey());
+			return $db->id();
+		} catch (DBException $e) {
+			throw $e;
+		} catch (Throwable $e) {
+			throw new ModelException($e->getMessage(), $e->getCode());
 		}
 	}
 	
@@ -77,6 +92,8 @@ abstract class BaseModel implements BaseModelInterface {
 	 * @param array $where The WHERE clause conditions.
 	 *
 	 * @return bool The success status of the update operation.
+	 * @throws DBException
+	 * @throws ModelException
 	 */
 	public static function update(array $data, array $where): bool {
 		if (empty($data) || empty($where)) {
@@ -86,8 +103,10 @@ abstract class BaseModel implements BaseModelInterface {
 		try {
 			DB::q()->update(static::tableName(), $data, $where);
 			return true;
-		} catch (Exception) {
-			return false;
+		} catch (DBException $e) {
+			throw $e;
+		} catch (Throwable $e) {
+			throw new ModelException($e->getMessage(), $e->getCode());
 		}
 	}
 	
@@ -97,6 +116,8 @@ abstract class BaseModel implements BaseModelInterface {
 	 * @param array $where The WHERE clause conditions.
 	 *
 	 * @return bool The success status of the delete operation.
+	 * @throws DBException
+	 * @throws ModelException
 	 */
 	public static function delete(array $where): bool {
 		if (empty($where)) {
@@ -106,8 +127,10 @@ abstract class BaseModel implements BaseModelInterface {
 		try {
 			DB::q()->delete(static::tableName(), $where);
 			return true;
-		} catch (Exception) {
-			return false;
+		} catch (DBException $e) {
+			throw $e;
+		} catch (Throwable $e) {
+			throw new ModelException($e->getMessage(), $e->getCode());
 		}
 	}
 	
@@ -117,6 +140,8 @@ abstract class BaseModel implements BaseModelInterface {
 	 * @param array $where The WHERE clause conditions.
 	 *
 	 * @return bool The existence status of the data.
+	 * @throws DBException
+	 * @throws ModelException
 	 */
 	public static function exists(array $where): bool {
 		if (empty($where)) {
@@ -125,8 +150,10 @@ abstract class BaseModel implements BaseModelInterface {
 		
 		try {
 			return DB::q()->has(static::tableName(), $where);
-		} catch (Exception) {
-			return false;
+		} catch (DBException $e) {
+			throw $e;
+		} catch (Throwable $e) {
+			throw new ModelException($e->getMessage(), $e->getCode());
 		}
 	}
 }

@@ -2,8 +2,10 @@
 
 namespace App\Router;
 
+use Exception;
 use App\Core\Request;
 use App\Core\Response;
+use App\Exceptions\RouterException;
 
 /**
  * Class Router
@@ -17,7 +19,8 @@ class Router {
 	private static ?array $params = null;
 	private static array $slugs = [];
 	
-	public const STRING_ACTION_SEPRATOR = '@';
+	private const STRING_ACTION_SEPRATOR = '@';
+	private const CONTROLLER_BASE_PATH   = 'App\Controllers\\';
 	
 	/**
 	 * Dispatches the request to the appropriate route handler.
@@ -34,37 +37,28 @@ class Router {
 		self::findRoute();
 		
 		if (is_null(self::$route)) {
-			response() // Not Found
-			->statusCode(404)
-				->message('Address not found! Check your URL...')
-				->json()
-				->send(true);
+			response(404, 'Address not found! Check your URL...')->json()->send();// Not Found
 		}
 		
 		self::getParams();
 		
-		if (!self::isValidMethod(Request::method(), self::$route->method)) {
-			response() // Method Not Allowed
-			->statusCode(405)
-				->message('Method is invalid. Change it...')
-				->json()
-				->send();
+		if (!self::isValidMethod(Request::method(), self::$route->method)) {// Method Not Allowed
+			response(405, DEV_MODE ? 'Method Not Allowed... (Available Methods: ' . implode(' - ', self::$route->method) . ')' : 'Method Not Allowed')->json()->send();
 		}
 		
-		$result = self::executeAction(self::$route->action);
-		if (!$result) {
-			response() // Service Unavailable
-			->statusCode(503)
-				->message('Something went wrong...')
-				->json()
-				->send();
+		try {
+			$result = self::executeAction(self::$route->action);
+		} catch (RouterException $e) { // Service Unavailable
+			$result = response(503, DEV_MODE ? $e->getmessage() : 'Something went wrong...');
+		} catch (Exception $e) {
+			$result = response(503, DEV_MODE ? $e->getmessage() : 'Something went wrong...');
 		}
 		
-		if (!($result instanceof Response)) {
-			echo is_object($result) || is_array($result) ? json_encode($result) : $result;
-			return;
+		if ($result instanceof Response) {
+			echo $result->json()->send();
 		}
-		echo $result->send();
+		
+		echo is_object($result) || is_array($result) ? json_encode($result) : $result;
 	}
 	
 	/**
@@ -73,10 +67,11 @@ class Router {
 	 * @param mixed $action The action to execute.
 	 *
 	 * @return mixed The result of the action execution.
+	 * @throws RouterException
 	 */
-	private static function executeAction($action): mixed {
+	private static function executeAction(mixed $action): mixed {
 		if (empty($action)) {
-			return false;
+			throw new RouterException('Action is empty');
 		}
 		
 		if (is_callable($action)) {
@@ -88,13 +83,13 @@ class Router {
 		}
 		
 		if (!is_array($action) || empty($action)) {
-			return false;
+			throw new RouterException('The action did not exploded');
 		}
 		
-		[$className, $methodName] = [$action[0], $action[1]];
+		[$className, $methodName] = [self::CONTROLLER_BASE_PATH . $action[0], $action[1]];
 		
 		if (!class_exists($className) || !method_exists($className, $methodName)) {
-			return false;
+			throw new RouterException('Class or method not found!');
 		}
 		
 		return (new $className)->$methodName(...self::$slugs);
@@ -145,7 +140,7 @@ class Router {
 			return;
 		}
 		
-		self::$params = Request::fullParams();
+		self::$params = Request::params();
 	}
 	
 	/**

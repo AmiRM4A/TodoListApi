@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Medoo\Medoo;
+use App\Exceptions\DBException;
 
 /**
  * Class DB
@@ -21,6 +22,7 @@ class DB {
 	 * Get the Medoo database query instance.
 	 *
 	 * @return Medoo The Medoo database query instance.
+	 * @throws DBException
 	 */
 	public static function q(): Medoo {
 		self::connect();
@@ -31,6 +33,7 @@ class DB {
 	 * Establish a database connection if not already connected.
 	 *
 	 * @return void
+	 * @throws DBException
 	 */
 	private static function connect(): void {
 		if (is_null(static::$connection)) {
@@ -46,9 +49,8 @@ class DB {
 					'port' => DB_PORT,
 					'logging' => MEDOO_LOG
 				]);
-			} catch (\Exception $e) {
-				echo $e->getMessage();
-				self::$connection = null;
+			} catch (\Throwable){
+				throw new DBException();
 			}
 		}
 	}

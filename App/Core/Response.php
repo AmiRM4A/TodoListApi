@@ -9,9 +9,9 @@ namespace App\Core;
  */
 class Response {
 	/**
-	 * @var string|null The response message.
+	 * @var mixed The response message.
 	 */
-	private ?string $message = null;
+	private mixed $message = null;
 	
 	/**
 	 * @var int|null The HTTP status code.
@@ -43,12 +43,12 @@ class Response {
 	/**
 	 * Set the HTTP status code.
 	 *
-	 * @param int $status The HTTP status code.
+	 * @param int|null $status The HTTP status code.
 	 *
 	 * @return self
 	 */
-	public function statusCode(int $status): self {
-		if (array_key_exists($status, Respond::STATUS_TEXTS)) {
+	public function statusCode(?int $status = 200): self {
+		if (!is_null($status) && array_key_exists($status, Respond::STATUS_TEXTS)) {
 			$this->statusCode = $status;
 		}
 		return $this;
@@ -61,8 +61,10 @@ class Response {
 	 *
 	 * @return self
 	 */
-	public function message(string $message = null): self {
-		$this->message = $message;
+	public function message(?string $message = null): self {
+		if (!is_null($message)) {
+			$this->message = $message;
+		}
 		return $this;
 	}
 	
@@ -218,12 +220,11 @@ class Response {
 	/**
 	 * Send the HTTP response.
 	 *
-	 * @param bool $exit Whether to exit after sending the response. Defaults to true.
 	 * @param bool $return Whether to return the response instead of outputting it. Defaults to false.
 	 *
 	 * @return void|string The response if $return is true.
 	 */
-	public function send(bool $exit = true, bool $return = false) {
+	public function send(bool $return = false) {
 		$this->setHeaders();
 		$response = json_encode([
 			'message' => $this->message,
@@ -235,9 +236,6 @@ class Response {
 		}
 		
 		echo $response;
-		
-		if ($exit) {
-			exit;
-		}
+		exit;
 	}
 }

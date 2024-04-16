@@ -17,6 +17,8 @@ require PROJ_DIR . str_replace('/', DIRECTORY_SEPARATOR, '/App/Helpers/Str.php')
 
 # Include route definitions
 require PROJ_DIR . str_replace('/', DIRECTORY_SEPARATOR, '/App/Router/Routes/api.php');
+require PROJ_DIR . str_replace('/', DIRECTORY_SEPARATOR, '/App/Router/Routes/task.php');
+require PROJ_DIR . str_replace('/', DIRECTORY_SEPARATOR, '/App/Router/Routes/user.php');
 
 # Dispatch routing
 Router::dispatch();
