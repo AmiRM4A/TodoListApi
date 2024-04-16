@@ -31,8 +31,8 @@ abstract class Model implements ModelInterface {
 			return DB::q()->get(static::tableName(), $column, $where);
 		} catch (DBException $e) {
 			throw $e;
-		} catch (Throwable) {
-			throw new ModelException();
+		} catch (Throwable $e) {
+			throw new ModelException($e->getMessage(), $e->getCode());
 		}
 	}
 	
@@ -55,8 +55,8 @@ abstract class Model implements ModelInterface {
 			return DB::q()->select(static::tableName(), $column, $where);
 		} catch (DBException $e) {
 			throw $e;
-		} catch (Throwable) {
-			throw new ModelException();
+		} catch (Throwable $e) {
+			throw new ModelException($e->getMessage(), $e->getCode());
 		}
 	}
 	
@@ -80,8 +80,8 @@ abstract class Model implements ModelInterface {
 			return $db->id();
 		} catch (DBException $e) {
 			throw $e;
-		} catch (Throwable) {
-			throw new ModelException();
+		} catch (Throwable $e) {
+			throw new ModelException($e->getMessage(), $e->getCode());
 		}
 	}
 	
@@ -105,8 +105,8 @@ abstract class Model implements ModelInterface {
 			return true;
 		} catch (DBException $e) {
 			throw $e;
-		} catch (Throwable) {
-			throw new ModelException();
+		} catch (Throwable $e) {
+			throw new ModelException($e->getMessage(), $e->getCode());
 		}
 	}
 	
@@ -129,8 +129,8 @@ abstract class Model implements ModelInterface {
 			return true;
 		} catch (DBException $e) {
 			throw $e;
-		} catch (Throwable) {
-			throw new ModelException();
+		} catch (Throwable $e) {
+			throw new ModelException($e->getMessage(), $e->getCode());
 		}
 	}
 	
@@ -152,8 +152,8 @@ abstract class Model implements ModelInterface {
 			return DB::q()->has(static::tableName(), $where);
 		} catch (DBException $e) {
 			throw $e;
-		} catch (Throwable) {
-			throw new ModelException();
+		} catch (Throwable $e) {
+			throw new ModelException($e->getMessage(), $e->getCode());
 		}
 	}
 }
