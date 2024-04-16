@@ -7,6 +7,8 @@ define('DEV_MODE', $_ENV['DEV_MODE']);
 # More => https://www.php.net/manual/en/errorfunc.constants.php
 error_reporting($_ENV['ERROR_MODE']);
 
+date_default_timezone_set('Asia/Tehran');
+
 # Database
 define('DB_TYPE', $_ENV['DB_TYPE']);
 define('DB_HOST', $_ENV['HOST']);
