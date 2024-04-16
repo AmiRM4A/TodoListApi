@@ -219,4 +219,36 @@ if (!function_exists('isEmail')) {
 		return preg_match('/[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}/', $email);
 	}
 }
+
+/**
+ * Sanitize a string input.
+ *
+ * This function performs the following operations on the input string:
+ * - Trims leading and trailing whitespace
+ * - Strips HTML tags
+ * - Escapes special characters
+ * - Removes any additional whitespace
+ *
+ * @param ?string $input The input string to be sanitized.
+ *
+ * @return bool|string The sanitized string, or false if the input is null.
+ */
+if (!function_exists('sanitizeStr')) {
+	function sanitizeStr(?string $input): bool|string {
+		if (!$input) {
+			return false;
+		}
+		
+		// Trim the input
+		$input = trim($input);
+		
+		// Strip HTML tags
+		$input = strip_tags($input);
+		
+		// Escape special characters
+		$input = htmlspecialchars($input, ENT_QUOTES, 'UTF-8');
+		
+		// Remove any additional whitespace
+		return preg_replace('/\s+/', ' ', $input);
+	}
 }
