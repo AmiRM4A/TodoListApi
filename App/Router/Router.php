@@ -37,38 +37,27 @@ class Router {
 		self::findRoute();
 		
 		if (is_null(self::$route)) {
-			response() // Not Found
-			->statusCode(404)
-				->message('Address not found! Check your URL...')
-				->json()
-				->send();
+			response(404, 'Address not found! Check your URL...')->json()->send();// Not Found
 		}
 		
 		self::getParams();
 		
-		if (!self::isValidMethod(Request::method(), self::$route->method)) {
-			response() // Method Not Allowed
-			->statusCode(405)
-				->message(DEV_MODE ? 'Method Not Allowed... (Available Methods: ' . implode(' - ', self::$route->method) . ')' : 'Method Not Allowed')
-				->json()
-				->send();
+		if (!self::isValidMethod(Request::method(), self::$route->method)) {// Method Not Allowed
+			response(405, DEV_MODE ? 'Method Not Allowed... (Available Methods: ' . implode(' - ', self::$route->method) . ')' : 'Method Not Allowed')->json()->send();
 		}
 		
 		try {
 			$result = self::executeAction(self::$route->action);
 		} catch (RouterException $e) { // Service Unavailable
-			$result = response()
-				->statusCode(503)
-				->message(DEV_MODE ? $e->getmessage() : 'Something went wrong...');
-		} catch (Exception $e) { // Change the position of this exception
-			$result = response()
-				->statusCode(503)
-				->message($e->getmessage());
+			$result = response(503, DEV_MODE ? $e->getmessage() : 'Something went wrong...');
+		} catch (Exception $e) {
+			$result = response(503, DEV_MODE ? $e->getmessage() : 'Something went wrong...');
 		}
 		
 		if ($result instanceof Response) {
 			echo $result->json()->send();
 		}
+		
 		echo is_object($result) || is_array($result) ? json_encode($result) : $result;
 	}
 	

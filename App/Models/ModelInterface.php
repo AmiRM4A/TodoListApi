@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-interface BaseModelInterface {
+interface ModelInterface {
 	public static function tableName(): string;
 	public static function primaryKey(): string|null;
 	public static function get(string|array $column, $where = null): array|null;
