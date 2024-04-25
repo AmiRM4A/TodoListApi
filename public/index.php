@@ -1,5 +1,4 @@
 <?php
-
 use App\Router\Router;
 
 # Include required files
