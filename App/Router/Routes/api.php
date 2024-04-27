@@ -13,6 +13,7 @@ use App\Router\Route;
 # Static: Use just the route name (e.g., domain.com/tasks)
 # Dynamic (Slug): Specify dynamic segments using curly braces (e.g., domain.com/tasks/{task_id})
 # Customize regex for dynamic segments with ->where('param_name', 'regex'):
+# Middleware list for the route with ->middleware(String or Array of Middlewares)
 # ----------------------------------------------------------------
 ## Method ##
 # Specify the method to handle the route:

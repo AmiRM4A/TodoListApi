@@ -46,16 +46,25 @@ class Route {
 	protected array $where = [];
 	
 	/**
+	 * The middleware stack for the route.
+	 *
+	 * @var array $middleware An array of middleware classes/functions to be executed before the route action.
+	 */
+	protected array $middleware = [];
+	
+	/**
 	 * Route constructor.
 	 *
 	 * @param string $route The route path.
 	 * @param array|string $method The HTTP methods allowed for this route.
 	 * @param callable|array|string $action The action to be performed when the route is matched.
+	 * @param array|string $middleware An array or string of middleware classes/functions to be executed before the route action.
 	 */
-	public function __construct(string $route, array|string $method, callable|array|string $action) {
+	public function __construct(string $route, array|string $method, callable|array|string $action, array|string $middleware = []) {
 		$this->route = strtolower($route);
 		$this->method = (array) Str::toUpperCase($method);
 		$this->action = $action;
+		$this->middleware = $middleware;
 		static::add($this);
 	}
 	
@@ -65,10 +74,11 @@ class Route {
 	 * @param string $route The route path.
 	 * @param array|string $method The HTTP methods allowed for this route.
 	 * @param callable|array|string $action The action to be performed when the route is matched.
+	 * @param array|string $middleware An array or string of middleware classes/functions to be executed before the route action.
 	 *
 	 * @return static The newly created route instance.
 	 */
-	public static function new(string $route, array|string $method, callable|array|string $action): static {
+	public static function new(string $route, array|string $method, callable|array|string $action, array|string $middleware = []): static {
 		return new static(...func_get_args());
 	}
 	
@@ -93,6 +103,18 @@ class Route {
 	 */
 	public function where(string $param, string $regex): static {
 		$this->where[$param] = $regex;
+		return $this;
+	}
+	
+	/**
+	 * Set the middleware for the route.
+	 *
+	 * @param array|string $middleware An array or string of middleware classes/functions to be executed before the route action.
+	 *
+	 * @return static This route instance.
+	 */
+	public function middleware(array|string $middleware): static {
+		$this->middleware = [...$this->middleware, ...(array) $middleware];
 		return $this;
 	}
 	

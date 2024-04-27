@@ -46,6 +46,10 @@ class Router {
 			response(405, DEV_MODE ? 'Method Not Allowed... (Available Methods: ' . implode(' - ', self::$route->method) . ')' : 'Method Not Allowed')->json()->send();
 		}
 		
+		foreach (self::$route->middleware ?? [] as $middleware) {
+			(new $middleware)->handle(...self::$slugs);
+		}
+		
 		try {
 			$result = self::executeAction(self::$route->action);
 		} catch (RouterException $e) { // Service Unavailable
