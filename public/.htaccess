@@ -1,8 +1,10 @@
 <IfModule mod_rewrite.c>
     <IfModule mod_negotiation.c>
+        # Disable MultiViews and Directory Indexing
         Options -MultiViews -Indexes
     </IfModule>
 
+    # Enable RewriteEngine
     RewriteEngine On
 
     # Redirect Trailing Slashes If Not A Folder...
@@ -13,5 +15,5 @@
     # Send Requests To Front Controller...
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteRule ^ init.php [L]
+    RewriteRule ^ index.php [L]
 </IfModule>
