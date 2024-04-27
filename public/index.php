@@ -1,5 +1,4 @@
 <?php
-use App\Router\Router;
 
 # Include required files
 require '../vendor/autoload.php';
@@ -20,4 +19,4 @@ require PROJ_DIR . str_replace('/', DIRECTORY_SEPARATOR, '/App/Router/Routes/tas
 require PROJ_DIR . str_replace('/', DIRECTORY_SEPARATOR, '/App/Router/Routes/user.php');
 
 # Dispatch routing
-Router::dispatch();
+App\Router\Router::dispatch();
