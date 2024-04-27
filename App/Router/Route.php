@@ -64,7 +64,7 @@ class Route {
 		$this->route = strtolower($route);
 		$this->method = (array) Str::toUpperCase($method);
 		$this->action = $action;
-		$this->middleware = $middleware;
+		$this->middleware = (array) $middleware;
 		static::add($this);
 	}
 	
@@ -126,8 +126,8 @@ class Route {
 	 *
 	 * @return static The newly created GET route instance.
 	 */
-	public static function get(string $route, callable|array|string $action): static {
-		return static::new($route, 'GET', $action);
+	public static function get(string $route, callable|array|string $action, string|array $middleware = []): static {
+		return static::new($route, 'GET', $action, $middleware);
 	}
 	
 	/**
@@ -138,8 +138,8 @@ class Route {
 	 *
 	 * @return static The newly created POST route instance.
 	 */
-	public static function post(string $route, callable|array|string $action): static {
-		return static::new($route, 'POST', $action);
+	public static function post(string $route, callable|array|string $action, string|array $middleware = []): static {
+		return static::new($route, 'POST', $action, $middleware);
 	}
 	
 	/**
@@ -150,8 +150,8 @@ class Route {
 	 *
 	 * @return static The newly created PUT route instance.
 	 */
-	public static function put(string $route, callable|array|string $action): static {
-		return static::new($route, 'PUT', $action);
+	public static function put(string $route, callable|array|string $action, string|array $middleware = []): static {
+		return static::new($route, 'PUT', $action, $middleware);
 	}
 	
 	/**
@@ -162,8 +162,8 @@ class Route {
 	 *
 	 * @return static The newly created DELETE route instance.
 	 */
-	public static function delete(string $route, callable|array|string $action): static {
-		return static::new($route, 'DELETE', $action);
+	public static function delete(string $route, callable|array|string $action, string|array $middleware = []): static {
+		return static::new($route, 'DELETE', $action, $middleware);
 	}
 	
 	/**
@@ -174,8 +174,8 @@ class Route {
 	 *
 	 * @return static The newly created PATCH route instance.
 	 */
-	public static function patch(string $route, callable|array|string $action): static {
-		return static::new($route, 'PATCH', $action);
+	public static function patch(string $route, callable|array|string $action, string|array $middleware = []): static {
+		return static::new($route, 'PATCH', $action, $middleware);
 	}
 	
 	/**
