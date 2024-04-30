@@ -1,6 +1,6 @@
 <?php
 
-use App\Router\Route;
+use App\Router\ApiRoute;
 
 /**
  * Define API Routes
@@ -24,6 +24,6 @@ use App\Router\Route;
 ## Action ##
 # Responses can be generated using the response class. You can either return the response or send it directly using the ->send method of the response class.
 
-Route::new('/', ['get', 'post'], function () {
+ApiRoute::new('/', ['get', 'post'], function () {
 	return response()->message('Welcome to the API')->json();
 });
