@@ -44,4 +44,27 @@ class Security {
 		
 		return $cleaned_data;
 	}
+	
+	/**
+	 * Clean a string based on specified filters.
+	 *
+	 * This function is used to sanitize a string according to specified filters.
+	 *
+	 * @param string $str The string to be cleaned.
+	 * @param int|array $filters The filter(s) to apply to the string. If no filter is specified,
+	 *                           FILTER_UNSAFE_RAW will be used as the default filter.
+	 *                           Multiple filters can be specified as an array.
+	 *
+	 * @return string|false The cleaned string, or false if filtering fails.
+	 *
+	 * Example usage:
+	 *
+	 * cleanString('John <script>'); Output: 'John '
+	 */
+	public static function cleanString(string $str, int|array $filters = []): string|false {
+		$filters = empty($filters) ? FILTER_UNSAFE_RAW : $filters;
+		$cleaned_str = filter_var($str, $filters, FILTER_NULL_ON_FAILURE);
+		
+		return $cleaned_str ?? false;
+	}
 }
