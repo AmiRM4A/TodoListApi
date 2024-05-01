@@ -97,6 +97,43 @@ if (!function_exists('response')) {
 }
 
 /**
+ * Sanitize input data based on its type and specified filters.
+ *
+ * This function is used to sanitize input data by applying appropriate sanitization methods based on the data type.
+ * It supports sanitizing strings, numbers, and arrays using specified filters and options.
+ *
+ * @param mixed $val The input data to be sanitized.
+ * @param int|array $filters The filter(s) to apply to the data. If no filter is specified for strings/numbers,
+ *                           FILTER_UNSAFE_RAW will be used as the default filter. Multiple filters can be
+ *                           specified as an array.
+ * @param array $exclude_keys An array of keys to be excluded from the sanitized array data.
+ *
+ * @return mixed The sanitized data.
+ *
+ * If the input is a string or a number, it will be sanitized using the `Security::cleanString` method with the specified filters.
+ * If the input is an array, it will be sanitized using the `Security::cleanArray` method with the specified filters and exclude keys.
+ * If the input is of any other type, it will be returned as is.
+ *
+ * Example usage:
+ *
+ * $sanitizedString = cleaner('John <script>', FILTER_SANITIZE_STRING); // Sanitized string
+ * $sanitizedNumber = cleaner(42.5, FILTER_VALIDATE_FLOAT); // Sanitized number
+ * $sanitizedArray = cleaner(['name' => 'John', 'age' => 25], FILTER_UNSAFE_RAW, ['age']); // Sanitized array, excluding 'age'
+ */
+if (!function_exists('cleaner')) {
+	function cleaner(mixed $val, int|array $filters = [], array $exclude_keys = []): mixed {
+		if (is_string($val) || is_numeric($val)) {
+			return Security::cleanString($val, $filters);
+		}
+		if (is_array($val)) {
+			return Security::cleanArray($val, $filters, $exclude_keys);
+		}
+		
+		return $val;
+	}
+}
+
+/**
  * Retrieve a parameter value from the current request.
  *
  * This function retrieves the value of a parameter from the current request. It likely abstracts the process
