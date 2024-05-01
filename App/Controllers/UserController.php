@@ -49,10 +49,10 @@ class UserController {
 	 * @throws DBException
 	 */
 	public function create(): mixed {
-		$name = sanitizeStr(bodyParam('name'));
-		$userName = sanitizeStr(bodyParam('user_name'));
-		$password = sanitizeStr(bodyParam('password'));
-		$email = sanitizeStr(bodyParam('email'));
+		$name = sanitizeStr(param('name'));
+		$userName = sanitizeStr(param('user_name'));
+		$password = sanitizeStr(param('password'));
+		$email = sanitizeStr(param('email'));
 		$ip = Request::ip();
 		
 		if (empty($name)) {
