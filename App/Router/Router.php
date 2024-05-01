@@ -55,11 +55,11 @@ class Router {
 			
 			$result = self::executeAction(self::$route->action);
 		} catch (RouterException $e) { // Service Unavailable
-			$result = response(503, DEV_MODE ? $e->getmessage() : 'Something went wrong...');
+			$result = response(503, DEV_MODE ? $e->getmessage() : 'The requested route was not found or is not available.');
 		} catch (MiddlewareException $e) {
 			$result = response(503, DEV_MODE ? $e->getmessage() : 'An error occurred while processing the middleware. Please check your middleware configurations.');
 		} catch (Exception $e) {
-			$result = response(503, DEV_MODE ? $e->getmessage() : 'Something went wrong...');
+			$result = response(503, DEV_MODE ? $e->getmessage() : 'An unexpected error occurred. Please try again later.');
 		}
 		
 		if ($result instanceof Response) {
