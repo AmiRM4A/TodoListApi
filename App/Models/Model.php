@@ -22,7 +22,7 @@ abstract class Model implements ModelInterface {
 	 * @throws ModelException
 	 * @throws DBException
 	 */
-	public static function get(string|array $column, $where = null): array|null {
+	public static function get(string|array $column, array $where = null): array|null {
 		if (empty($column)) {
 			return null;
 		}
