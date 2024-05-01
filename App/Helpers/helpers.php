@@ -2,6 +2,7 @@
 
 use App\Core\Request;
 use App\Core\Response;
+use App\Helpers\Security;
 use App\Helpers\UserAgent;
 
 /**
@@ -146,7 +147,8 @@ if (!function_exists('cleaner')) {
  */
 if (!function_exists('param')) {
 	function param(string $key, mixed $default = null): mixed {
-		return Request::param($key, $default);
+		$param = Request::param($key, $default);
+		return $param !== $default ? cleaner($param) : $default;
 	}
 }
 
@@ -162,7 +164,8 @@ if (!function_exists('param')) {
  */
 if (!function_exists('queryParam')) {
 	function queryParam(string $key, mixed $default = null): mixed {
-		return Request::queryParam($key, $default);
+		$param = Request::queryParam($key, $default);
+		return $param !== $default ? cleaner($param) : $default;
 	}
 }
 
@@ -178,7 +181,8 @@ if (!function_exists('queryParam')) {
  */
 if (!function_exists('bodyParam')) {
 	function bodyParam(string $key, mixed $default = null): mixed {
-		return Request::bodyParam($key, $default);
+		$param = Request::bodyParam($key, $default);
+		return $param !== $default ? cleaner($param) : $default;
 	}
 }
 
@@ -194,7 +198,8 @@ if (!function_exists('bodyParam')) {
  */
 if (!function_exists('rawParam')) {
 	function rawParam(string $key, mixed $default = null): mixed {
-		return Request::rawParam($key, $default);
+		$param = Request::rawParam($key, $default);
+		return $param !== $default ? cleaner($param) : $default;
 	}
 }
 
