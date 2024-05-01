@@ -6,6 +6,7 @@ use Exception;
 use App\Core\Request;
 use App\Core\Response;
 use App\Exceptions\RouterException;
+use App\Exceptions\MiddlewareException;
 
 /**
  * Class Router
@@ -46,14 +47,17 @@ class Router {
 			response(405, DEV_MODE ? 'Method Not Allowed... (Available Methods: ' . implode(' - ', self::$route->method) . ')' : 'Method Not Allowed')->json()->send();
 		}
 		
-		foreach (self::$route->middleware ?? [] as $middleware) {
-			(new $middleware)->handle(...self::$slugs);
-		}
-		
 		try {
+			// Check Middlewares
+			foreach (self::$route->middleware ?? [] as $middleware) {
+				(new $middleware)->handle(...self::$slugs);
+			}
+			
 			$result = self::executeAction(self::$route->action);
 		} catch (RouterException $e) { // Service Unavailable
 			$result = response(503, DEV_MODE ? $e->getmessage() : 'Something went wrong...');
+		} catch (MiddlewareException $e) {
+			$result = response(503, DEV_MODE ? $e->getmessage() : 'An error occurred while processing the middleware. Please check your middleware configurations.');
 		} catch (Exception $e) {
 			$result = response(503, DEV_MODE ? $e->getmessage() : 'Something went wrong...');
 		}
