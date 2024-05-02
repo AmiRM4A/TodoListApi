@@ -20,7 +20,7 @@ class Auth {
 	 *
 	 * @throws Exception If there's an issue with the database connection or query.
 	 *
-	 * @return Response The response object containing the HTTP status code and message.
+	 * @return Response|void The response object containing the HTTP status code and message.
 	 */
 	public function handle() {
 		$token = $_COOKIE['token'] ?? null;
