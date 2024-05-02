@@ -4,6 +4,7 @@ use App\Core\Request;
 use App\Core\Response;
 use App\Helpers\Security;
 use App\Helpers\UserAgent;
+use Random\RandomException;
 
 if (!function_exists('dump')) {
 	/**
@@ -293,5 +294,29 @@ if (!function_exists('sanitizeStr')) {
 		
 		// Remove any additional whitespace
 		return preg_replace('/\s+/', ' ', $input);
+	}
+}
+
+if (!function_exists('getRandomString')) {
+	/**
+	 * Generate a random string of a specified length.
+	 *
+	 * This function generates a random string of a specified length using the `random_bytes` function.
+	 * The random bytes are then converted to a hexadecimal string using the `bin2hex` function.
+	 *
+	 * @param int $length The desired length of the random string. Default is 32.
+	 *
+	 * @return string The generated random string.
+	 */
+	function getRandomString(int $length = 32): string
+	{
+		if ($length === 0) {
+			return '';
+		}
+		try {
+			return bin2hex(random_bytes($length));
+		} catch (RandomException) {
+			return '';
+		}
 	}
 }

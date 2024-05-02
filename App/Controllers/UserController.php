@@ -80,7 +80,7 @@ class UserController {
 			return response(400, 'Username or email already exists!');
 		}
 		
-		$salt = bin2hex(random_bytes(16));
+		$salt = getRandomString(16);
 		$hashedPassword = md5($password . $salt);
 		
 		return User::insert([
@@ -143,7 +143,7 @@ class UserController {
 		}
 		
 		if ($password && $user['password'] !== md5($password . $salt)) {
-			$salt = bin2hex(random_bytes(16));
+			$salt = getRandomString(16);
 			$updatedData['salt'] = $salt;
 			$newHashedPassword = md5($password . $salt);
 			$updatedData['password'] = $newHashedPassword;
