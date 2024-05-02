@@ -37,3 +37,5 @@ use App\Router\ApiRoute;
 ApiRoute::new('/', ['get', 'post'], function () {
 	return response()->message('Welcome to the API')->json();
 });
+
+ApiRoute::post('login', 'AuthController@handleLogin');
