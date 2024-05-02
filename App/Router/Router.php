@@ -47,19 +47,28 @@ class Router {
 			response(405, DEV_MODE ? 'Method Not Allowed... (Available Methods: ' . implode(' - ', self::$route->method) . ')' : 'Method Not Allowed')->json()->send();
 		}
 		
+		$result = null;
+		
 		try {
 			// Check Middlewares
 			foreach (self::$route->middleware ?? [] as $middleware) {
-				(new $middleware)->handle(...self::$slugs);
+				$result = (new $middleware)->handle(...self::$slugs);
 			}
 			
-			$result = self::executeAction(self::$route->action);
+			if (is_null($result)) {
+				$result = self::executeAction(self::$route->action);
+			}
+			
 		} catch (RouterException $e) { // Service Unavailable
 			$result = response(503, DEV_MODE ? $e->getmessage() : 'The requested route was not found or is not available.');
 		} catch (MiddlewareException $e) {
 			$result = response(503, DEV_MODE ? $e->getmessage() : 'An error occurred while processing the middleware. Please check your middleware configurations.');
 		} catch (Exception $e) {
 			$result = response(503, DEV_MODE ? $e->getmessage() : 'An unexpected error occurred. Please try again later.');
+		}
+		
+		if (is_null($result)) {
+			$result = response(503, DEV_MODE ? 'The requested action could not be executed.' : 'An error occurred while processing your request.');
 		}
 		
 		if ($result instanceof Response) {
