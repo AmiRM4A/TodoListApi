@@ -45,7 +45,7 @@ class Auth {
 		
 		// If the token data is not found or the token has expired, return an invalid token response
 		if (!$tokenExpTime || strtotime($tokenExpTime) < time()) {
-			return response(401, 'Invalid token!');
+			return response(401, 'The provided authentication token is invalid or has expired!');
 		}
 	}
 }
