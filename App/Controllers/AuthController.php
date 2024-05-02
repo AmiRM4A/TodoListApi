@@ -2,11 +2,11 @@
 
 namespace App\Controllers;
 
-use Exception;
 use App\Models\User;
 use App\Core\Response;
 use App\Models\LoggedIn;
-use App\Exceptions\MiddlewareException;
+use App\Exceptions\DBException;
+use App\Exceptions\ModelException;
 
 /**
  * AuthController class
@@ -19,7 +19,8 @@ class AuthController {
 	 *
 	 * This function checks if the user is already logged in by looking for the 'token' cookie.
 	 *
-	 * @throws Exception If there's an issue with the database connection or query.
+	 * @throws DBException If there is an error retrieving data from the database.
+	 * @throws ModelException If there is an error with the LoggedIn model.
 	 *
 	 * @return Response An array containing the HTTP status code and response message.
 	 */
@@ -36,16 +37,12 @@ class AuthController {
 		}
 		
 		// Get the user from the database based on the provided email and password
-		try {
-			$user = User::get([
-				'id',
-				'email',
-				'password',
-				'salt'
-			], ['email' => $email]);
-		} catch (Exception $e) {
-			throw new MiddlewareException($e->getMessage(), $e->getCode());
-		}
+		$user = User::get([
+			'id',
+			'email',
+			'password',
+			'salt'
+		], ['email' => $email]);
 		
 		if (!$user) {
 			return response(404, 'User Not Found!');
@@ -65,15 +62,11 @@ class AuthController {
 		header("Set-Cookie: token=$token; Expires: $expTime; path=/; samesite=Strict");
 		
 		// Store the token, expiration time, and user ID in the LoggedIn model
-		try {
-			LoggedIn::insert([
-				'token' => $token,
-				'expires_at' => $expTime,
-				'user' => $user['id']
-			]);
-		} catch (Exception $e) {
-			return response(503, $e->getMessage());
-		}
+		LoggedIn::insert([
+			'token' => $token,
+			'expires_at' => $expTime,
+			'user' => $user['id']
+		]);
 		
 		return response(200, 'You got the token!');
 	}
