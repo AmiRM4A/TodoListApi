@@ -49,10 +49,10 @@ class UserController {
 	 * @throws DBException
 	 */
 	public function create(): mixed {
-		$name = sanitizeStr(bodyParam('name'));
-		$userName = sanitizeStr(bodyParam('user_name'));
-		$password = sanitizeStr(bodyParam('password'));
-		$email = sanitizeStr(bodyParam('email'));
+		$name = param('name');
+		$userName = param('user_name');
+		$password = param('password');
+		$email = param('email');
 		$ip = Request::ip();
 		
 		if (empty($name)) {
@@ -80,7 +80,7 @@ class UserController {
 			return response(400, 'Username or email already exists!');
 		}
 		
-		$salt = bin2hex(random_bytes(16));
+		$salt = getRandomString(16);
 		$hashedPassword = md5($password . $salt);
 		
 		return User::insert([
@@ -129,10 +129,10 @@ class UserController {
 		
 		$salt = $user['salt'];
 		$updatedData = [];
-		$name = sanitizeStr(rawParam('name'));
-		$userName = sanitizeStr(rawParam('user_name'));
-		$password = sanitizeStr(rawParam('password'));
-		$email = sanitizeStr(rawParam('email'));
+		$name = param('name');
+		$userName = param('user_name');
+		$password = param('password');
+		$email = param('email');
 		
 		if ($name && $user['name'] !== $name) {
 			$updatedData['name'] = $name;
@@ -143,7 +143,7 @@ class UserController {
 		}
 		
 		if ($password && $user['password'] !== md5($password . $salt)) {
-			$salt = bin2hex(random_bytes(16));
+			$salt = getRandomString(16);
 			$updatedData['salt'] = $salt;
 			$newHashedPassword = md5($password . $salt);
 			$updatedData['password'] = $newHashedPassword;

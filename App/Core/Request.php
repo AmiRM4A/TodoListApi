@@ -67,7 +67,7 @@ class Request {
 	 * @return array|bool The sanitized POST data, or false if the data cannot be parsed.
 	 */
 	public static function post(): array|bool {
-		return Security::cleanInputData($_POST, FILTER_UNSAFE_RAW);
+		return Security::cleanArray($_POST, FILTER_UNSAFE_RAW);
 	}
 	
 	/**
@@ -78,7 +78,7 @@ class Request {
 	 * @return array|bool The sanitized GET data, or false if the data cannot be parsed.
 	 */
 	public static function get(): array|bool {
-		return Security::cleanInputData($_GET, FILTER_UNSAFE_RAW);
+		return Security::cleanArray($_GET, FILTER_UNSAFE_RAW);
 	}
 	
 	/**

@@ -17,3 +17,5 @@ define('DB_USER', $_ENV['DB_USER']);
 define('DB_PASS', $_ENV['DB_PASS']);
 define('DB_PORT', $_ENV['DB_PORT']);
 define('MEDOO_LOG', $_ENV['MEDOO_LOG']);
+
+define('TOKEN_EXPIRE_TIME', $_ENV['TOKEN_EXPIRE_TIME']);

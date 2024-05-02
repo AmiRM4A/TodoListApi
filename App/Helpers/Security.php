@@ -2,28 +2,35 @@
 
 namespace App\Helpers;
 
-use InvalidArgumentException;
-
 /**
  * Class Security
  *
- * Provides methods for sanitizing input data.
+ * Provides some security methods.
  */
 class Security {
 	/**
-	 * Clean input data based on specified filters.
+	 * Clean an array based on specified filters.
 	 *
-	 * @param array $input_array The input data to be sanitized.
-	 * @param int|array $filters The filter to apply to the input data. Default is FILTER_UNSAFE_RAW.
-	 * @param array $exclude_keys Keys to exclude from the cleaned data.
+	 * This function is used to sanitize an array of data according to specified filters.
+	 * It also provides an option to exclude certain keys from the cleaned data.
 	 *
-	 * @return array|false|null The cleaned input data, or false if filtering fails.
-	 * @throws InvalidArgumentException If the input is not an array.
+	 * @param array $array The array to be cleaned.
+	 * @param int|array $filters The filter(s) to apply to the data. If no filter is specified,
+	 *                           FILTER_UNSAFE_RAW will be used as the default filter.
+	 *                           Multiple filters can be specified as an array.
+	 * @param array $exclude_keys An array of keys to be excluded from the cleaned data.
+	 *
+	 * @return array|false The cleaned data as an array, or false if filtering fails.
+	 *
+	 * Example usage:
+	 *
+	 * $cleanedData = self::cleanArray(['name' => 'John <script>'], [FILTER_SANITIZE_STRING]);
+	 * $cleanedData = self::cleanArray(['email' => 'test@example.com', 'age' => 25], FILTER_UNSAFE_RAW, ['age']);
 	 */
-	public static function cleanInputData(array $input_array, int|array $filters = [], array $exclude_keys = []): false|array|null {
+	public static function cleanArray(array $array, int|array $filters = [], array $exclude_keys = []): array|false {
 		$filters = empty($filters) ? FILTER_UNSAFE_RAW : $filters;
 		
-		$cleaned_data = filter_var_array($input_array, $filters, true);
+		$cleaned_data = filter_var_array($array, $filters, true);
 		
 		if ($cleaned_data === false) {
 			return false;
@@ -36,5 +43,28 @@ class Security {
 		}
 		
 		return $cleaned_data;
+	}
+	
+	/**
+	 * Clean a string based on specified filters.
+	 *
+	 * This function is used to sanitize a string according to specified filters.
+	 *
+	 * @param string $str The string to be cleaned.
+	 * @param int|array $filters The filter(s) to apply to the string. If no filter is specified,
+	 *                           FILTER_UNSAFE_RAW will be used as the default filter.
+	 *                           Multiple filters can be specified as an array.
+	 *
+	 * @return string|false The cleaned string, or false if filtering fails.
+	 *
+	 * Example usage:
+	 *
+	 * cleanString('John <script>'); Output: 'John '
+	 */
+	public static function cleanString(string $str, int|array $filters = []): string|false {
+		$filters = empty($filters) ? FILTER_UNSAFE_RAW : $filters;
+		$cleaned_str = filter_var($str, $filters, FILTER_NULL_ON_FAILURE);
+		
+		return $cleaned_str ?? false;
 	}
 }

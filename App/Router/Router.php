@@ -6,6 +6,7 @@ use Exception;
 use App\Core\Request;
 use App\Core\Response;
 use App\Exceptions\RouterException;
+use App\Exceptions\MiddlewareException;
 
 /**
  * Class Router
@@ -46,12 +47,28 @@ class Router {
 			response(405, DEV_MODE ? 'Method Not Allowed... (Available Methods: ' . implode(' - ', self::$route->method) . ')' : 'Method Not Allowed')->json()->send();
 		}
 		
+		$result = null;
+		
 		try {
-			$result = self::executeAction(self::$route->action);
+			// Check Middlewares
+			foreach (self::$route->middleware ?? [] as $middleware) {
+				$result = (new $middleware)->handle(...self::$slugs);
+			}
+			
+			if (is_null($result)) {
+				$result = self::executeAction(self::$route->action);
+			}
+			
 		} catch (RouterException $e) { // Service Unavailable
-			$result = response(503, DEV_MODE ? $e->getmessage() : 'Something went wrong...');
+			$result = response(503, DEV_MODE ? $e->getmessage() : 'The requested route was not found or is not available.');
+		} catch (MiddlewareException $e) {
+			$result = response(503, DEV_MODE ? $e->getmessage() : 'An error occurred while processing the middleware. Please check your middleware configurations.');
 		} catch (Exception $e) {
-			$result = response(503, DEV_MODE ? $e->getmessage() : 'Something went wrong...');
+			$result = response(503, DEV_MODE ? $e->getmessage() : 'An unexpected error occurred. Please try again later.');
+		}
+		
+		if (is_null($result)) {
+			$result = response(503, DEV_MODE ? 'The requested action could not be executed.' : 'An error occurred while processing your request.');
 		}
 		
 		if ($result instanceof Response) {

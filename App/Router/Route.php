@@ -46,16 +46,25 @@ class Route {
 	protected array $where = [];
 	
 	/**
+	 * The middleware stack for the route.
+	 *
+	 * @var array $middleware An array of middleware classes/functions to be executed before the route action.
+	 */
+	protected array $middleware = [];
+	
+	/**
 	 * Route constructor.
 	 *
 	 * @param string $route The route path.
 	 * @param array|string $method The HTTP methods allowed for this route.
 	 * @param callable|array|string $action The action to be performed when the route is matched.
+	 * @param array|string $middleware An array or string of middleware classes/functions to be executed before the route action.
 	 */
-	public function __construct(string $route, array|string $method, callable|array|string $action) {
+	public function __construct(string $route, array|string $method, callable|array|string $action, array|string $middleware = []) {
 		$this->route = strtolower($route);
 		$this->method = (array) Str::toUpperCase($method);
 		$this->action = $action;
+		$this->middleware = (array) $middleware;
 		static::add($this);
 	}
 	
@@ -65,10 +74,11 @@ class Route {
 	 * @param string $route The route path.
 	 * @param array|string $method The HTTP methods allowed for this route.
 	 * @param callable|array|string $action The action to be performed when the route is matched.
+	 * @param array|string $middleware An array or string of middleware classes/functions to be executed before the route action.
 	 *
 	 * @return static The newly created route instance.
 	 */
-	public static function new(string $route, array|string $method, callable|array|string $action): static {
+	public static function new(string $route, array|string $method, callable|array|string $action, array|string $middleware = []): static {
 		return new static(...func_get_args());
 	}
 	
@@ -97,6 +107,18 @@ class Route {
 	}
 	
 	/**
+	 * Set the middleware for the route.
+	 *
+	 * @param array|string $middleware An array or string of middleware classes/functions to be executed before the route action.
+	 *
+	 * @return static This route instance.
+	 */
+	public function middleware(array|string $middleware): static {
+		$this->middleware = [...$this->middleware, ...(array) $middleware];
+		return $this;
+	}
+	
+	/**
 	 * Define a GET route.
 	 *
 	 * @param string $route The route path.
@@ -104,8 +126,8 @@ class Route {
 	 *
 	 * @return static The newly created GET route instance.
 	 */
-	public static function get(string $route, callable|array|string $action): static {
-		return static::new($route, 'GET', $action);
+	public static function get(string $route, callable|array|string $action, string|array $middleware = []): static {
+		return static::new($route, 'GET', $action, $middleware);
 	}
 	
 	/**
@@ -116,8 +138,8 @@ class Route {
 	 *
 	 * @return static The newly created POST route instance.
 	 */
-	public static function post(string $route, callable|array|string $action): static {
-		return static::new($route, 'POST', $action);
+	public static function post(string $route, callable|array|string $action, string|array $middleware = []): static {
+		return static::new($route, 'POST', $action, $middleware);
 	}
 	
 	/**
@@ -128,8 +150,8 @@ class Route {
 	 *
 	 * @return static The newly created PUT route instance.
 	 */
-	public static function put(string $route, callable|array|string $action): static {
-		return static::new($route, 'PUT', $action);
+	public static function put(string $route, callable|array|string $action, string|array $middleware = []): static {
+		return static::new($route, 'PUT', $action, $middleware);
 	}
 	
 	/**
@@ -140,8 +162,8 @@ class Route {
 	 *
 	 * @return static The newly created DELETE route instance.
 	 */
-	public static function delete(string $route, callable|array|string $action): static {
-		return static::new($route, 'DELETE', $action);
+	public static function delete(string $route, callable|array|string $action, string|array $middleware = []): static {
+		return static::new($route, 'DELETE', $action, $middleware);
 	}
 	
 	/**
@@ -152,8 +174,8 @@ class Route {
 	 *
 	 * @return static The newly created PATCH route instance.
 	 */
-	public static function patch(string $route, callable|array|string $action): static {
-		return static::new($route, 'PATCH', $action);
+	public static function patch(string $route, callable|array|string $action, string|array $middleware = []): static {
+		return static::new($route, 'PATCH', $action, $middleware);
 	}
 	
 	/**

@@ -22,7 +22,7 @@ abstract class Model implements ModelInterface {
 	 * @throws ModelException
 	 * @throws DBException
 	 */
-	public static function get(string|array $column, $where = null): array|null {
+	public static function get(string|array $column, ?array $where = null): mixed {
 		if (empty($column)) {
 			return null;
 		}
@@ -32,7 +32,7 @@ abstract class Model implements ModelInterface {
 		} catch (DBException $e) {
 			throw $e;
 		} catch (Throwable $e) {
-			throw new ModelException($e->getMessage(), $e->getCode());
+			throw new ModelException($e->getMessage());
 		}
 	}
 	
@@ -46,17 +46,17 @@ abstract class Model implements ModelInterface {
 	 * @throws DBException
 	 * @throws ModelException
 	 */
-	public static function select(string|array $column, array $where = null): array|null {
+	public static function select(string|array $column, ?array $join = null, ?array $where = null): mixed {
 		if (empty($column)) {
 			return null;
 		}
 		
 		try {
-			return DB::q()->select(static::tableName(), $column, $where);
+			return DB::q()->select(static::tableName(), $join, $column, $where);
 		} catch (DBException $e) {
 			throw $e;
 		} catch (Throwable $e) {
-			throw new ModelException($e->getMessage(), $e->getCode());
+			throw new ModelException($e->getMessage());
 		}
 	}
 	
@@ -81,7 +81,7 @@ abstract class Model implements ModelInterface {
 		} catch (DBException $e) {
 			throw $e;
 		} catch (Throwable $e) {
-			throw new ModelException($e->getMessage(), $e->getCode());
+			throw new ModelException($e->getMessage());
 		}
 	}
 	
@@ -106,7 +106,7 @@ abstract class Model implements ModelInterface {
 		} catch (DBException $e) {
 			throw $e;
 		} catch (Throwable $e) {
-			throw new ModelException($e->getMessage(), $e->getCode());
+			throw new ModelException($e->getMessage());
 		}
 	}
 	
@@ -130,7 +130,7 @@ abstract class Model implements ModelInterface {
 		} catch (DBException $e) {
 			throw $e;
 		} catch (Throwable $e) {
-			throw new ModelException($e->getMessage(), $e->getCode());
+			throw new ModelException($e->getMessage());
 		}
 	}
 	
@@ -153,7 +153,7 @@ abstract class Model implements ModelInterface {
 		} catch (DBException $e) {
 			throw $e;
 		} catch (Throwable $e) {
-			throw new ModelException($e->getMessage(), $e->getCode());
+			throw new ModelException($e->getMessage());
 		}
 	}
 }
