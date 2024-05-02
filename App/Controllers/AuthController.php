@@ -26,14 +26,14 @@ class AuthController {
 	 */
 	public function handleLogin(): Response {
 		if (!empty($_COOKIE['token'])) {
-			return response(202, 'You already have the token!');
+			return response(200, 'You are already authenticated.');
 		}
 		
 		$email = param('email', null);
 		$password = param('password', null);
 		
 		if (is_null($email) || is_null($password)) {
-			return response(400, 'Invalid Email or Password');
+			return response(400, 'Please provide both email and password.');
 		}
 		
 		// Get the user from the database based on the provided email and password
@@ -45,13 +45,13 @@ class AuthController {
 		], ['email' => $email]);
 		
 		if (!$user) {
-			return response(404, 'User Not Found!');
+			return response(404, 'User not found with the provided email address.');
 		}
 		
 		// Check if the password is incorrect
 		$hashedPassword = md5($password . $user['salt']);
 		if ($hashedPassword !== $user['password']) {
-			return response(400, 'Invalid Email or Password!');
+			return response(401, 'Invalid email or password.');
 		}
 		
 		// Generate a new token (32 length) and set the expiration time (1 week from now)
@@ -68,6 +68,6 @@ class AuthController {
 			'user' => $user['id']
 		]);
 		
-		return response(200, 'You got the token!');
+		return response(200, 'Authentication successful. You are now logged in.');
 	}
 }
