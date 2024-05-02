@@ -2,9 +2,12 @@
 
 namespace App\Middlewares;
 
-use Exception;
+use Throwable;
 use App\Core\Response;
 use App\Models\LoggedIn;
+use App\Exceptions\DBException;
+use App\Exceptions\ModelException;
+use App\Exceptions\MiddlewareException;
 
 /**
  * Auth middleware
@@ -18,7 +21,9 @@ class Auth {
 	 *
 	 * This method checks the validity of the token cookie and returns an appropriate response.
 	 *
-	 * @throws Exception If there's an issue with the database connection or query.
+	 * @throws DBException If there is an error retrieving data from the database.
+	 * @throws ModelException If there is an error with the LoggedIn model.
+	 * @throws MiddlewareException If any other exception occurs during the token validation process.
 	 *
 	 * @return Response|void The response object containing the HTTP status code and message.
 	 */
@@ -31,13 +36,15 @@ class Auth {
 		
 		// Retrieve the token data from the LoggedIn model
 		try {
-			$tokenData = LoggedIn::get('*', ['token' => $token]);
-		} catch (Exception $e) {
-			return response(503, $e->getMessage());
+			$tokenExpTime = LoggedIn::get('expires_at', ['token' => $token]);
+		} catch (DBException|ModelException $e) {
+			throw $e;
+		} catch (Throwable $e) {
+			throw new MiddlewareException($e->getMessage());
 		}
 		
 		// If the token data is not found or the token has expired, return an invalid token response
-		if (!$tokenData || strtotime($tokenData['expires_at']) < time()) {
+		if (!$tokenExpTime || strtotime($tokenExpTime) < time()) {
 			return response(401, 'Invalid token!');
 		}
 	}
