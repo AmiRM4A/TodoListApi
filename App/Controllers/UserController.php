@@ -49,10 +49,10 @@ class UserController {
 	 * @throws DBException
 	 */
 	public function create(): mixed {
-		$name = sanitizeStr(param('name'));
-		$userName = sanitizeStr(param('user_name'));
-		$password = sanitizeStr(param('password'));
-		$email = sanitizeStr(param('email'));
+		$name = param('name');
+		$userName = param('user_name');
+		$password = param('password');
+		$email = param('email');
 		$ip = Request::ip();
 		
 		if (empty($name)) {
@@ -129,10 +129,10 @@ class UserController {
 		
 		$salt = $user['salt'];
 		$updatedData = [];
-		$name = sanitizeStr(rawParam('name'));
-		$userName = sanitizeStr(rawParam('user_name'));
-		$password = sanitizeStr(rawParam('password'));
-		$email = sanitizeStr(rawParam('email'));
+		$name = param('name');
+		$userName = param('user_name');
+		$password = param('password');
+		$email = param('email');
 		
 		if ($name && $user['name'] !== $name) {
 			$updatedData['name'] = $name;
