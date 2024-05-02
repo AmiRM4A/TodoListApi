@@ -32,7 +32,7 @@ class MeController {
 			'users.name',
 			'users.user_name',
 			'users.email',
-			'users.registerd_at',
+			'users.registered_at',
 			'users.last_login',
 			'users.last_ip'
 		], [
