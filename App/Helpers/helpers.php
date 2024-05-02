@@ -94,8 +94,8 @@ if (!function_exists('response')) {
 	 *
 	 * @return Response A new Response object.
 	 */
-	function response(?int $code = null, ?string $message = null): Response {
-		return (new Response())->statusCode($code)->message($message);
+	function response(?int $code = null, ?string $message = null, mixed $data = null): Response {
+		return (new Response())->statusCode($code)->message($message)->data($data);
 	}
 }
 
