@@ -48,9 +48,9 @@ class TaskController {
 	 * @throws DBException
 	 */
 	public function create(): mixed {
-		$title = sanitizeStr(param('title'));
-		$description = sanitizeStr(param('description', ''));
-		$status = sanitizeStr(param('status', 'Uncompleted'));
+		$title = param('title');
+		$description = param('description', '');
+		$status = param('status', 'Uncompleted');
 		$createdBy = param('created_by', 1);//TODO: Delete default value when you write the login/register part
 		$updatedAt = currentTime();
 		
@@ -105,9 +105,9 @@ class TaskController {
 		}
 		
 		$updatedData = [];
-		$title = sanitizeStr(rawParam('title'));
-		$description = sanitizeStr(rawParam('description'));
-		$status = sanitizeStr(rawParam('status'));
+		$title = param('title');
+		$description = param('description');
+		$status = param('status');
 		
 		if ($title && $task['title'] !== $title) {
 			$updatedData['title'] = $title;
