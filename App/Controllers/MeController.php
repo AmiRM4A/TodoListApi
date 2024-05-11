@@ -22,6 +22,9 @@ class MeController {
 	 * @return Response A JSON response containing the user data or an error message.
 	 */
 	public function getLoginData(): Response {
+		$authHeader = json_decode($_SERVER['HTTP_AUTHORIZATION']);
+		$token = trim(str_replace("Bearer ", "", $authHeader->token)) ?: null;
+
 		/**
 		 * Selects all columns (*) from the `logged_in` table,
 		 * joins the `users` table on the `user` column from `logged_in` and `id` column from `users`,
@@ -36,9 +39,9 @@ class MeController {
 			'users.last_login',
 			'users.last_ip'
 		], [
-			'[><]users' => ['user' => 'id']
+			'[><]users' => ['user_id' => 'id']
 		], [
-			'token' => $_COOKIE['token']
+			'token' => $token
 		]);
 		
 		// If no data is found, return a 404 JSON response with an error message

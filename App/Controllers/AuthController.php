@@ -25,8 +25,8 @@ class AuthController {
 	 * @return Response An array containing the HTTP status code and response message.
 	 */
 	public function handleLogin(): Response {
-		if (!empty($_COOKIE['token'])) {
-			return response(200, 'You are already authenticated.');
+		if (!empty($_SERVER['HTTP_AUTHORIZATION'])) {
+			return response(200, 'You are already have authentication data.');
 		}
 		
 		$email = param('email', null);
@@ -58,16 +58,13 @@ class AuthController {
 		$token = getRandomString();
 		$expTime = date('Y-m-d H:i:s', strtotime('+ ' . TOKEN_EXPIRE_TIME));
 		
-		// Set the 'token' cookie with the new token and expiration time
-		header("Set-Cookie: token=$token; Expires: $expTime; path=/; samesite=Strict");
-		
 		// Store the token, expiration time, and user ID in the LoggedIn model
 		LoggedIn::insert([
 			'token' => $token,
 			'expires_at' => $expTime,
-			'user' => $user['id']
+			'user_id' => $user['id']
 		]);
 		
-		return response(200, 'Authentication successful. You are now logged in.');
+		return response(200, 'Authentication successful. You are now logged in.', ['token' => $token]);
 	}
 }
