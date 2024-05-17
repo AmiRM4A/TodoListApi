@@ -29,12 +29,9 @@ class ApiRoute extends Route {
 	/**
 	 * Add the Auth middleware to the middleware stack.
 	 *
-	 * @param bool $auth Whether to add the Auth middleware or not. Default is true.
 	 * @return void
 	 */
-	public function auth(bool $auth = true): void {
-		if ($auth) {
-			$this->middleware[] = \App\Middlewares\Auth::class;
-		}
+	public function auth(): void {
+		$this->middleware[] = \App\Middlewares\Auth::class;
 	}
 }

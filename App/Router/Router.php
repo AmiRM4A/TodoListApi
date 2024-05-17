@@ -52,7 +52,7 @@ class Router {
 		try {
 			// Check Middlewares
 			foreach (self::$route->middleware ?? [] as $middleware) {
-				$result = (new $middleware)->handle(...self::$slugs);
+				$result = (new $middleware)->handle();
 			}
 			
 			if (is_null($result)) {
