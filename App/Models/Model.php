@@ -52,7 +52,13 @@ abstract class Model implements ModelInterface {
 		}
 		
 		try {
-			return DB::q()->select(static::tableName(), $join, $column, $where);
+			$db = DB::q();
+			// Query without join
+			if (is_null($join)) {
+				return $db->select(static::tableName(), $column, $where);
+			}
+			// Query with join
+			return $db->select(static::tableName(), $join, $column, $where);
 		} catch (DBException $e) {
 			throw $e;
 		} catch (Throwable $e) {
