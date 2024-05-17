@@ -58,6 +58,7 @@ CREATE TABLE `tasks`
     `status`      ENUM ('pending', 'completed') NOT NULL DEFAULT 'pending',                                     -- Status of the task (required, default 'pending')
     `created_at`  TIMESTAMP                     NOT NULL DEFAULT CURRENT_TIMESTAMP,                             -- Timestamp when the task was created (defaults to current timestamp)
     `updated_at`  TIMESTAMP                     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- Timestamp when the task was last updated (required, auto-updated)
+    `completed_at` TIMESTAMP                    NULL DEFAULT NULL,                                              -- Timestamp when the task was completed (optional, default NULL)
     `created_by`  INT                           NOT NULL,                                                       -- ID of the user who created the task (required)
 
     -- Define keys
