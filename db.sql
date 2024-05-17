@@ -1,17 +1,18 @@
 -- ### USERS TABLE ### --
 DROP TABLE IF EXISTS `users`;
 
--- This table stores user information such as name, username, password, email, and login details
+-- This table stores user information such as name, username, password, email, and login/register details
 CREATE TABLE `users`
 (
     `id`         INT AUTO_INCREMENT,                             -- Unique ID for the user (auto-incremented)
     `name`       VARCHAR(50) NOT NULL,                           -- Full name of the user (required)
     `user_name`  VARCHAR(20) NOT NULL,                           -- Username of the user (required)
-    `password`   BINARY(64)  NOT NULL,                           -- Hashed password of the user (required, binary)
+    `password`   VARCHAR(64)  NOT NULL,                           -- Hashed password of the user (required)
     `email`      VARCHAR(120)         DEFAULT NULL,              -- Email address of the user (unique, can be null, max 120 chars)
     `last_login` TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP, -- Timestamp of the user's last login (defaults to current timestamp)
+    `registered_at` TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP, -- Timestamp of the user's registration time (defaults to current timestamp)
     `last_ip`    VARCHAR(15) NOT NULL,                           -- IP address from which the user last logged in (required, max 15 chars for IPv4)
-    `salt`       BINARY(64)  NOT NULL,                           -- Salt used for password hashing (required, unique, binary)
+    `salt`       VARCHAR(64)  NOT NULL,                           -- Salt used for password hashing (required, unique)
 
     -- Define keys
     PRIMARY KEY (`id`),                                          -- Primary key constraint for the id column
@@ -57,6 +58,7 @@ CREATE TABLE `tasks`
     `status`      ENUM ('pending', 'completed') NOT NULL DEFAULT 'pending',                                     -- Status of the task (required, default 'pending')
     `created_at`  TIMESTAMP                     NOT NULL DEFAULT CURRENT_TIMESTAMP,                             -- Timestamp when the task was created (defaults to current timestamp)
     `updated_at`  TIMESTAMP                     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- Timestamp when the task was last updated (required, auto-updated)
+    `completed_at` TIMESTAMP                    NULL DEFAULT NULL,                                              -- Timestamp when the task was completed (optional, default NULL)
     `created_by`  INT                           NOT NULL,                                                       -- ID of the user who created the task (required)
 
     -- Define keys

@@ -28,9 +28,10 @@ class Auth {
 	 * @return Response|void The response object containing the HTTP status code and message.
 	 */
 	public function handle() {
-		$token = $_COOKIE['token'] ?? null;
+		$authHeader = json_decode($_SERVER['HTTP_AUTHORIZATION']);
+		$token = trim(str_replace("Bearer ", "", $authHeader->token)) ?: null;
 		
-		if (!$token || !is_string($token)) {
+		if (!$token) {
 			return response(401, 'Your authentication token is missing or invalid.');
 		}
 		
