@@ -19,10 +19,10 @@ class AuthController {
 	 *
 	 * This function checks if the user is already logged in by looking for the 'token' cookie.
 	 *
-	 * @throws DBException If there is an error retrieving data from the database.
+	 * @return Response An array containing the HTTP status code and response message.
 	 * @throws ModelException If there is an error with the LoggedIn model.
 	 *
-	 * @return Response An array containing the HTTP status code and response message.
+	 * @throws DBException If there is an error retrieving data from the database.
 	 */
 	public function handleLogin(): Response {
 		if (!empty($_SERVER['HTTP_AUTHORIZATION'])) {
@@ -31,6 +31,7 @@ class AuthController {
 		
 		$email = param('email', null);
 		$password = param('password', null);
+		$rememberMe = (int) param('remember_me', null);
 		
 		if (is_null($email) || is_null($password)) {
 			return response(400, 'Please provide both email and password.');
@@ -54,9 +55,10 @@ class AuthController {
 			return response(401, 'Invalid email or password.');
 		}
 		
-		// Generate a new token (32 length) and set the expiration time (1 week from now)
+		// Generate a new token (32 length) and set the expiration time (if remember_me is true, 3 days if not 1 hour)
 		$token = getRandomString();
-		$expTime = date('Y-m-d H:i:s', strtotime('+ ' . TOKEN_EXPIRE_TIME));
+		$expIn = $rememberMe ? REM_TOKEN_EXP_TIME : TOKEN_EXP_TIME;
+		$expTime = date('Y-m-d H:i:s', strtotime('+ ' . $expIn));
 		
 		// Store the token, expiration time, and user ID in the LoggedIn model
 		LoggedIn::insert([
