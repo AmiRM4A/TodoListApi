@@ -45,7 +45,16 @@ class Auth {
 		
 		try {
 			// Fetch the user data from the database using the token
-			$userData = LoggedIn::get('*', [
+			$userData = LoggedIn::get([
+				'users.id',
+				'users.name',
+				'users.user_name',
+				'users.email',
+				'users.registered_at',
+				'users.last_login',
+				'users.last_ip',
+				'logged_in.expires_at'
+			], [
 				'[><]users' => ['user_id' => 'id']
 			], [
 				'token' => $token
@@ -60,6 +69,7 @@ class Auth {
 			return null;
 		}
 		
+		// Unsets the token expiration time from user's data
 		unset($userData['expires_at']);
 		
 		return static::$userData = $userData;
