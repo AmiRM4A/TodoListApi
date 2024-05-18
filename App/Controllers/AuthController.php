@@ -42,7 +42,7 @@ class AuthController {
 			'email',
 			'password',
 			'salt'
-		], ['email' => $email]);
+		], null, ['email' => $email]);
 		
 		if (!$user) {
 			return response(404, 'User not found with the provided email address.');
