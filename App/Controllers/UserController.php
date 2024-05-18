@@ -38,7 +38,7 @@ class UserController {
 			return response(404, 'User(' . $id . ') not found!');
 		}
 		
-		return User::get('*', ['id' => $id]) ?: response(404, 'User not found!');
+		return User::get('*', null, ['id' => $id]) ?: response(404, 'User not found!');
 	}
 	
 	/**
@@ -121,7 +121,7 @@ class UserController {
 	 * @throws DBException
 	 */
 	public function update(int $id): mixed {
-		$user = User::get('*', ['id' => $id]);
+		$user = User::get('*', null, ['id' => $id]);
 		
 		if (!$user) {
 			return response(404, 'User(' . $id . ') not found!');

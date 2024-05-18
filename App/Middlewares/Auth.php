@@ -2,51 +2,35 @@
 
 namespace App\Middlewares;
 
-use Throwable;
-use App\Core\Response;
-use App\Models\LoggedIn;
-use App\Exceptions\DBException;
-use App\Exceptions\ModelException;
+use App\Services\Auth as AuthService;
 use App\Exceptions\MiddlewareException;
 
 /**
  * Auth middleware
  *
- * This middleware class is responsible for authenticating requests by validating the token cookie.
- * It checks if a token cookie exists, and if so, it verifies its validity against the LoggedIn model.
+ * This middleware class is responsible for authenticating requests by validating the provided token.
+ * It checks if the token is valid by verifying it against the LoggedIn model.
  */
 class Auth {
 	/**
-	 * Handle the validity of incoming request.
+	 * Handle the validity of the incoming request.
 	 *
-	 * This method checks the validity of the token cookie and returns an appropriate response.
+	 * This method checks the validity of the provided token using the AuthService.
+	 * If the token is valid, it allows the request to proceed.
+	 * If the token is invalid, it throws a MiddlewareException.
 	 *
-	 * @throws DBException If there is an error retrieving data from the database.
-	 * @throws ModelException If there is an error with the LoggedIn model.
-	 * @throws MiddlewareException If any other exception occurs during the token validation process.
-	 *
-	 * @return Response|void The response object containing the HTTP status code and message.
+	 * @return void
+	 * @throws MiddlewareException If the token is invalid or if any other exception occurs during the token validation process.
 	 */
-	public function handle() {
-		$authHeader = json_decode($_SERVER['HTTP_AUTHORIZATION']);
-		$token = trim(str_replace("Bearer ", "", $authHeader->token)) ?: null;
+	public function handle(): void {
+		// Retrieve the user data using the provided token
 		
-		if (!$token) {
-			return response(401, 'Your authentication token is missing or invalid.');
+		if (is_null(AuthService::user())) {
+		// If the user data is null (invalid token), throw a MiddlewareException
+			throw new MiddlewareException('Invalid or Expired token', 401);
 		}
 		
-		// Retrieve the token data from the LoggedIn model
-		try {
-			$tokenExpTime = LoggedIn::get('expires_at', ['token' => $token]);
-		} catch (DBException|ModelException $e) {
-			throw $e;
-		} catch (Throwable $e) {
-			throw new MiddlewareException($e->getMessage());
-		}
-		
-		// If the token data is not found or the token has expired, return an invalid token response
-		if (!$tokenExpTime || strtotime($tokenExpTime) < time()) {
-			return response(401, 'The provided authentication token is invalid or has expired!');
-		}
+		// If the token is valid, allow the request to proceed
+		// (No further action is required)
 	}
 }

@@ -60,11 +60,11 @@ class Router {
 			}
 			
 		} catch (RouterException $e) { // Service Unavailable
-			$result = response(503, DEV_MODE ? $e->getmessage() : 'The requested route was not found or is not available.');
+			$result = response($e->getCode(), DEV_MODE ? $e->getmessage() : 'The requested route was not found or is not available.');
 		} catch (MiddlewareException $e) {
-			$result = response(503, DEV_MODE ? $e->getmessage() : 'An error occurred while processing the middleware. Please check your middleware configurations.');
+			$result = response($e->getCode(), $e->getmessage());
 		} catch (Exception $e) {
-			$result = response(503, DEV_MODE ? $e->getmessage() : 'An unexpected error occurred. Please try again later.');
+			$result = response($e->getCode(), DEV_MODE ? $e->getmessage() : 'An unexpected error occurred. Please try again later.');
 		}
 		
 		if (is_null($result)) {
