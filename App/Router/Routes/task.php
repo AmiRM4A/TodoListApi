@@ -7,4 +7,3 @@ ApiRoute::get('get-task/{id}', 'TaskController@show')->auth(); // Get a specific
 ApiRoute::post('create-task', 'TaskController@create')->auth(); // Create new task
 ApiRoute::delete('remove-task/{id}', 'TaskController@destroy')->auth(); // Delete an existing task
 ApiRoute::put('update-task/{id}', 'TaskController@update')->auth(); // Update an existing task
-ApiRoute::post('get-user-tasks', 'TaskController@userTasks')->auth(); // Get tasks of a specific user
