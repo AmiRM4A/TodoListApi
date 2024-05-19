@@ -7,15 +7,13 @@ namespace App\Models;
  *
  * This model represents the users of the application.
  */
-class User extends Model
-{
+class User extends Model {
 	/**
 	 * Get the name of the database table associated with the User model.
 	 *
 	 * @return string
 	 */
-	public static function tableName(): string
-	{
+	public static function tableName(): string {
 		return 'users';
 	}
 	
@@ -24,8 +22,7 @@ class User extends Model
 	 *
 	 * @return string|null
 	 */
-	public static function primaryKey(): string|null
-	{
+	public static function primaryKey(): string|null {
 		return 'id';
 	}
 }

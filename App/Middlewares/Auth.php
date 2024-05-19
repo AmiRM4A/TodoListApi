@@ -26,7 +26,7 @@ class Auth {
 		// Retrieve the user data using the provided token
 		
 		if (is_null(AuthService::user())) {
-		// If the user data is null (invalid token), throw a MiddlewareException
+			// If the user data is null (invalid token), throw a MiddlewareException
 			throw new MiddlewareException('Invalid or Expired token', 401);
 		}
 		

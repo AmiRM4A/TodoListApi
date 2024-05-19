@@ -17,8 +17,9 @@ class TaskController {
 	 * Retrieves all tasks.
 	 *
 	 * @return mixed The retrieved tasks.
-	 * @throws ModelException
-	 * @throws DBException
+	 *
+	 * @throws ModelException If there is an error with the LoggedIn model.
+	 * @throws DBException If there is an error retrieving data from the database.
 	 */
 	public function index(): mixed {
 		return Task::select('*', null, ['created_by' => Auth::user('id')]);
@@ -30,8 +31,9 @@ class TaskController {
 	 * @param int $id The ID of the task to retrieve.
 	 *
 	 * @return mixed The retrieved task or a 404 response if not found.
-	 * @throws ModelException
-	 * @throws DBException
+	 *
+	 * @throws ModelException If there is an error with the LoggedIn model.
+	 * @throws DBException If there is an error retrieving data from the database.
 	 */
 	public function show(int $id): mixed {
 		$userId = Auth::user('id');
@@ -50,8 +52,9 @@ class TaskController {
 	 * Creates a new task.
 	 *
 	 * @return mixed The created task or a 400 response if the title is invalid.
-	 * @throws ModelException
-	 * @throws DBException
+	 *
+	 * @throws ModelException If there is an error with the LoggedIn model.
+	 * @throws DBException If there is an error retrieving data from the database.
 	 */
 	public function create(): mixed {
 		$title = param('title');
@@ -61,7 +64,7 @@ class TaskController {
 		if (empty($title)) {
 			return response(400, 'Invalid title');
 		}
-
+		
 		return Task::insert([
 			'title' => $title,
 			'description' => $description,
@@ -77,8 +80,9 @@ class TaskController {
 	 * @param int $id The ID of the task to delete.
 	 *
 	 * @return mixed The result of the delete operation.
-	 * @throws ModelException
-	 * @throws DBException
+	 *
+	 * @throws ModelException If there is an error with the LoggedIn model.
+	 * @throws DBException If there is an error retrieving data from the database.
 	 */
 	public function destroy(int $id): mixed {
 		$userId = Auth::user('id');
@@ -99,8 +103,9 @@ class TaskController {
 	 * @param int $id The ID of the task to update.
 	 *
 	 * @return mixed The result of the update operation.
-	 * @throws ModelException
-	 * @throws DBException
+	 *
+	 * @throws ModelException If there is an error with the LoggedIn model.
+	 * @throws DBException If there is an error retrieving data from the database.
 	 */
 	public function update(int $id): mixed {
 		$userId = Auth::user('id');

@@ -47,6 +47,7 @@ abstract class Model implements ModelInterface {
 	 * Select data from the database.
 	 *
 	 * @param string|array $column The column(s) to select.
+	 * @param array|null $join The column you want to join.
 	 * @param array|null $where The WHERE clause conditions.
 	 *
 	 * @return array|null The selected data or null on failure.

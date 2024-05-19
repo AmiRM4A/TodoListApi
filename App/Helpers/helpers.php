@@ -308,8 +308,7 @@ if (!function_exists('getRandomString')) {
 	 *
 	 * @return string The generated random string.
 	 */
-	function getRandomString(int $length = 32): string
-	{
+	function getRandomString(int $length = 32): string {
 		if ($length === 0) {
 			return '';
 		}
