@@ -80,7 +80,7 @@ class Auth {
 	 *
 	 * @return string|null The authentication token or null if not found.
 	 */
-	protected static function getToken(): ?string {
+	public static function getToken(): ?string {
 		// Extract and return the authentication token from the HTTP Authorization header
 		return static::stripAuthToken($_SERVER['HTTP_AUTHORIZATION']) ?: null;
 	}

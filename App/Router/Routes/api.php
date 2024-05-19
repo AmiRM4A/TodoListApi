@@ -39,4 +39,5 @@ ApiRoute::new('/', ['get', 'post'], function () {
 });
 
 ApiRoute::post('login', 'AuthController@handleLogin');
+ApiRoute::post('log-out', 'AuthController@handleLogOut')->auth();
 ApiRoute::post('me', 'MeController@getLoginData')->auth();
