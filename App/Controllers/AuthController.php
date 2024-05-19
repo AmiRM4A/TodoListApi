@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Models\User;
 use App\Core\Response;
+use App\Services\Auth;
 use App\Models\LoggedIn;
 use App\Exceptions\DBException;
 use App\Exceptions\ModelException;
@@ -68,5 +69,21 @@ class AuthController {
 		]);
 		
 		return response(200, 'Authentication successful. You are now logged in.', ['token' => $token]);
+	}
+	
+	/**
+	 * Handle the user logout process.
+	 *
+	 * This method logs out the currently authenticated user by deleting their record from the `LoggedIn` table.
+	 *
+	 * @return Response|null An array containing the HTTP status code and response message.
+	 * @throws DBException
+	 * @throws ModelException
+	 */
+	public function handleLogOut(): ?Response {
+		return LoggedIn::delete(['AND' => [
+			'user_id' => Auth::user('id'),
+			'token' => Auth::getToken()
+		]]) ? response(200, 'You are now logged out.') : null;
 	}
 }
