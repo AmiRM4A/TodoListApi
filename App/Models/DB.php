@@ -49,7 +49,7 @@ class DB {
 					'port' => DB_PORT,
 					'logging' => MEDOO_LOG
 				]);
-			} catch (\Throwable){
+			} catch (\Throwable) {
 				throw new DBException();
 			}
 		}

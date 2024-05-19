@@ -33,7 +33,7 @@ class Response {
 	 *
 	 * @param mixed $data The response data.
 	 *
-	 * @return self
+	 * @return self Returns the current instance of the object.
 	 */
 	public function data(mixed $data): self {
 		$this->data = $data;
@@ -45,7 +45,7 @@ class Response {
 	 *
 	 * @param int|null $status The HTTP status code.
 	 *
-	 * @return self
+	 * @return self Returns the current instance of the object.
 	 */
 	public function statusCode(?int $status = 200): self {
 		if (!is_null($status) && array_key_exists($status, Respond::STATUS_TEXTS)) {
@@ -59,7 +59,7 @@ class Response {
 	 *
 	 * @param string|null $message The response message.
 	 *
-	 * @return self
+	 * @return self Returns the current instance of the object.
 	 */
 	public function message(?string $message = null): self {
 		if (!is_null($message)) {
@@ -74,7 +74,7 @@ class Response {
 	 * @param string $name The name of the header.
 	 * @param string $val The value of the header.
 	 *
-	 * @return self
+	 * @return self Returns the current instance of the object.
 	 */
 	public function header(string $name, string $val): self {
 		$this->headers[$name] = $val;
@@ -84,7 +84,7 @@ class Response {
 	/**
 	 * Set the response content type to JSON.
 	 *
-	 * @return self
+	 * @return self Returns the current instance of the object.
 	 */
 	public function json(): self {
 		$this->header('Content-Type', 'application/json');
@@ -94,7 +94,7 @@ class Response {
 	/**
 	 * Set the response content type to HTML.
 	 *
-	 * @return self
+	 * @return self Returns the current instance of the object.
 	 */
 	public function html(): self {
 		$this->header('Content-Type', 'text/html');
@@ -104,7 +104,7 @@ class Response {
 	/**
 	 * Set the response content type to plain text.
 	 *
-	 * @return self
+	 * @return self Returns the current instance of the object.
 	 */
 	public function plain(): self {
 		$this->header('Content-Type', 'text/plain');
@@ -114,7 +114,7 @@ class Response {
 	/**
 	 * Set the response content type to XML.
 	 *
-	 * @return self
+	 * @return self Returns the current instance of the object.
 	 */
 	public function xml(): self {
 		$this->header('Content-Type', 'application/xml');
@@ -124,7 +124,7 @@ class Response {
 	/**
 	 * Set the response headers to prevent caching.
 	 *
-	 * @return self
+	 * @return self Returns the current instance of the object.
 	 */
 	public function noCache(): self {
 		$this->header('Cache-Control', 'no-cache, no-store, must-revalidate');
@@ -136,7 +136,7 @@ class Response {
 	 *
 	 * @param int $seconds The number of seconds to cache the response.
 	 *
-	 * @return self
+	 * @return self Returns the current instance of the object.
 	 */
 	public function maxAge(int $seconds): self {
 		$this->header('Cache-Control', 'max-age=' . $seconds);
@@ -148,7 +148,7 @@ class Response {
 	 *
 	 * @param string $filename The filename of the attachment.
 	 *
-	 * @return self
+	 * @return self Returns the current instance of the object.
 	 */
 	public function attachment(string $filename = ''): self {
 		$disposition = 'attachment';
@@ -162,7 +162,7 @@ class Response {
 	/**
 	 * Set the response as inline content.
 	 *
-	 * @return self
+	 * @return self Returns the current instance of the object.
 	 */
 	public function inline(): self {
 		$this->header('Content-Disposition', 'inline');
@@ -174,7 +174,7 @@ class Response {
 	 *
 	 * @param string $origin The allowed origin. Defaults to '*'.
 	 *
-	 * @return self
+	 * @return self Returns the current instance of the object.
 	 */
 	public function allowOrigin(string $origin = '*'): self {
 		$this->header('Access-Control-Allow-Origin', $origin);
@@ -186,7 +186,7 @@ class Response {
 	 *
 	 * @param string $methods The allowed HTTP methods.
 	 *
-	 * @return self
+	 * @return self Returns the current instance of the object.
 	 */
 	public function allowMethods(string $methods): self {
 		$this->header('Access-Control-Allow-Methods', $methods);
@@ -198,7 +198,7 @@ class Response {
 	 *
 	 * @param string $headers The allowed headers.
 	 *
-	 * @return self
+	 * @return self Returns the current instance of the object.
 	 */
 	public function allowHeaders(string $headers): self {
 		$this->header('Access-Control-Allow-Headers', $headers);

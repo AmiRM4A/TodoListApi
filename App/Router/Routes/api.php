@@ -8,15 +8,15 @@ use App\Router\ApiRoute;
  * This file is responsible for defining all the routes for the API endpoints.
  *
  * Route Definition Syntax:
- *		ApiRoute::new('route_pattern', ['http_methods'], $action, $middleware[Optional]);
- *   	- 'route_pattern' is the URL pattern for the route (e.g., '/', '/users/{id}')
- *   	- ['http_methods'] is an array of HTTP methods allowed for the route (e.g., ['GET', 'POST'])
- *   	- $action is the code to be executed when the route is matched, which can be:
- *     		- A string in the format 'Controller@method'
- *     		- An array in the format ['Controller', 'method']
- *     		- An anonymous function or callable
- *		- $middleware[Optional] is an optional parameter that specifies the middleware(s) to be applied to the route.
- *			- A string (for a single middleware) or an array of middleware.
+ *        ApiRoute::new('route_pattern', ['http_methods'], $action, $middleware[Optional]);
+ *    - 'route_pattern' is the URL pattern for the route (e.g., '/', '/users/{id}')
+ *    - ['http_methods'] is an array of HTTP methods allowed for the route (e.g., ['GET', 'POST'])
+ *    - $action is the code to be executed when the route is matched, which can be:
+ *            - A string in the format 'Controller@method'
+ *            - An array in the format ['Controller', 'method']
+ *            - An anonymous function or callable
+ *        - $middleware[Optional] is an optional parameter that specifies the middleware(s) to be applied to the route.
+ *            - A string (for a single middleware) or an array of middleware.
  *
  * Additional Options:
  *   - Dynamic segments in route patterns can be specified using curly braces (e.g., '/users/{id}').
@@ -38,6 +38,6 @@ ApiRoute::new('/', ['get', 'post'], function () {
 	return response()->message('Welcome to the API')->json();
 });
 
-ApiRoute::post('login', 'AuthController@handleLogin');
-ApiRoute::post('log-out', 'AuthController@handleLogOut')->auth();
-ApiRoute::post('me', 'MeController@getLoginData')->auth();
+ApiRoute::post('login', 'AuthController@handleLogin'); // Route for user login
+ApiRoute::post('log-out', 'AuthController@handleLogOut')->auth(); // Route for user logout, requires authentication
+ApiRoute::post('me', 'MeController@getLoginData')->auth(); // Route for retrieving user data, requires authentication

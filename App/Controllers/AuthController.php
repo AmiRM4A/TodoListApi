@@ -21,8 +21,8 @@ class AuthController {
 	 * This function checks if the user is already logged in by looking for the 'token' cookie.
 	 *
 	 * @return Response An array containing the HTTP status code and response message.
-	 * @throws ModelException If there is an error with the LoggedIn model.
 	 *
+	 * @throws ModelException If there is an error with the LoggedIn model.
 	 * @throws DBException If there is an error retrieving data from the database.
 	 */
 	public function handleLogin(): Response {
@@ -77,8 +77,9 @@ class AuthController {
 	 * This method logs out the currently authenticated user by deleting their record from the `LoggedIn` table.
 	 *
 	 * @return Response|null An array containing the HTTP status code and response message.
-	 * @throws DBException
-	 * @throws ModelException
+	 *
+	 * @throws ModelException If there is an error with the LoggedIn model.
+	 * @throws DBException If there is an error retrieving data from the database.
 	 */
 	public function handleLogOut(): ?Response {
 		return LoggedIn::delete(['AND' => [
