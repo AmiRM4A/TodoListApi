@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Models\User;
 use App\Core\Response;
+use App\Services\Auth;
 use App\Models\LoggedIn;
 use App\Exceptions\DBException;
 use App\Exceptions\ModelException;
@@ -19,18 +20,19 @@ class AuthController {
 	 *
 	 * This function checks if the user is already logged in by looking for the 'token' cookie.
 	 *
-	 * @throws DBException If there is an error retrieving data from the database.
-	 * @throws ModelException If there is an error with the LoggedIn model.
-	 *
 	 * @return Response An array containing the HTTP status code and response message.
+	 *
+	 * @throws ModelException If there is an error with the LoggedIn model.
+	 * @throws DBException If there is an error retrieving data from the database.
 	 */
 	public function handleLogin(): Response {
-		if (!empty($_COOKIE['token'])) {
-			return response(200, 'You are already authenticated.');
+		if (!empty($_SERVER['HTTP_AUTHORIZATION'])) {
+			return response(200, 'You are already have authentication data.');
 		}
 		
 		$email = param('email', null);
 		$password = param('password', null);
+		$rememberMe = (int) param('remember_me', null);
 		
 		if (is_null($email) || is_null($password)) {
 			return response(400, 'Please provide both email and password.');
@@ -42,7 +44,7 @@ class AuthController {
 			'email',
 			'password',
 			'salt'
-		], ['email' => $email]);
+		], null, ['email' => $email]);
 		
 		if (!$user) {
 			return response(404, 'User not found with the provided email address.');
@@ -54,20 +56,35 @@ class AuthController {
 			return response(401, 'Invalid email or password.');
 		}
 		
-		// Generate a new token (32 length) and set the expiration time (1 week from now)
+		// Generate a new token (32 length) and set the expiration time (if remember_me is true, 3 days if not 1 hour)
 		$token = getRandomString();
-		$expTime = date('Y-m-d H:i:s', strtotime('+ ' . TOKEN_EXPIRE_TIME));
-		
-		// Set the 'token' cookie with the new token and expiration time
-		header("Set-Cookie: token=$token; Expires: $expTime; path=/; samesite=Strict");
+		$expIn = $rememberMe ? REM_TOKEN_EXP_TIME : TOKEN_EXP_TIME;
+		$expTime = date('Y-m-d H:i:s', strtotime('+ ' . $expIn));
 		
 		// Store the token, expiration time, and user ID in the LoggedIn model
 		LoggedIn::insert([
 			'token' => $token,
 			'expires_at' => $expTime,
-			'user' => $user['id']
+			'user_id' => $user['id']
 		]);
 		
-		return response(200, 'Authentication successful. You are now logged in.');
+		return response(200, 'Authentication successful. You are now logged in.', ['token' => $token]);
+	}
+	
+	/**
+	 * Handle the user logout process.
+	 *
+	 * This method logs out the currently authenticated user by deleting their record from the `LoggedIn` table.
+	 *
+	 * @return Response|null An array containing the HTTP status code and response message.
+	 *
+	 * @throws ModelException If there is an error with the LoggedIn model.
+	 * @throws DBException If there is an error retrieving data from the database.
+	 */
+	public function handleLogOut(): ?Response {
+		return LoggedIn::delete(['AND' => [
+			'user_id' => Auth::user('id'),
+			'token' => Auth::getToken()
+		]]) ? response(200, 'You are now logged out.') : null;
 	}
 }

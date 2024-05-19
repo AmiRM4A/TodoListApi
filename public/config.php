@@ -1,5 +1,6 @@
 <?php
 
+# Main
 define('PROJ_DIR', dirname(__FILE__, 2));
 define('DEV_MODE', $_ENV['DEV_MODE']);
 
@@ -18,4 +19,6 @@ define('DB_PASS', $_ENV['DB_PASS']);
 define('DB_PORT', $_ENV['DB_PORT']);
 define('MEDOO_LOG', $_ENV['MEDOO_LOG']);
 
-define('TOKEN_EXPIRE_TIME', $_ENV['TOKEN_EXPIRE_TIME']);
+# Token
+define('REM_TOKEN_EXP_TIME', $_ENV['REM_TOKEN_EXP_TIME']);
+define('TOKEN_EXP_TIME', $_ENV['TOKEN_EXP_TIME']);

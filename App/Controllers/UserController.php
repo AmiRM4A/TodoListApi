@@ -17,8 +17,9 @@ class UserController {
 	 * Retrieves all users.
 	 *
 	 * @return mixed The retrieved users.
-	 * @throws ModelException
-	 * @throws DBException
+	 *
+	 * @throws ModelException If there is an error with the LoggedIn model.
+	 * @throws DBException If there is an error retrieving data from the database.
 	 */
 	public function index(): mixed {
 		return User::select('*');
@@ -30,23 +31,25 @@ class UserController {
 	 * @param int $id The ID of the user to retrieve.
 	 *
 	 * @return mixed The retrieved user or a 404 response if not found.
-	 * @throws ModelException
-	 * @throws DBException
+	 *
+	 * @throws ModelException If there is an error with the LoggedIn model.
+	 * @throws DBException If there is an error retrieving data from the database.
 	 */
 	public function show(int $id): mixed {
 		if (!User::exists(['id' => $id])) {
 			return response(404, 'User(' . $id . ') not found!');
 		}
 		
-		return User::get('*', ['id' => $id]) ?: response(404, 'User not found!');
+		return User::get('*', null, ['id' => $id]) ?: response(404, 'User not found!');
 	}
 	
 	/**
 	 * Creates a new user.
 	 *
 	 * @return mixed The created user or a 400 response if the input is invalid.
-	 * @throws ModelException
-	 * @throws DBException
+	 *
+	 * @throws ModelException If there is an error with the LoggedIn model.
+	 * @throws DBException If there is an error retrieving data from the database.
 	 */
 	public function create(): mixed {
 		$name = param('name');
@@ -100,8 +103,9 @@ class UserController {
 	 * @param int $id The ID of the user to delete.
 	 *
 	 * @return mixed The result of the delete operation.
-	 * @throws ModelException
-	 * @throws DBException
+	 *
+	 * @throws ModelException If there is an error with the LoggedIn model.
+	 * @throws DBException If there is an error retrieving data from the database.
 	 */
 	public function destroy(int $id): mixed {
 		if (!User::exists(['id' => $id])) {
@@ -117,45 +121,30 @@ class UserController {
 	 * @param int $id The ID of the user to update.
 	 *
 	 * @return mixed The result of the update operation.
-	 * @throws ModelException
-	 * @throws DBException
+	 *
+	 * @throws ModelException If there is an error with the LoggedIn model.
+	 * @throws DBException If there is an error retrieving data from the database.
 	 */
 	public function update(int $id): mixed {
-		$user = User::get('*', ['id' => $id]);
-		
+		$user = User::get('*', null, ['id' => $id]);
 		if (!$user) {
 			return response(404, 'User(' . $id . ') not found!');
 		}
 		
 		$salt = $user['salt'];
-		$updatedData = [];
-		$name = param('name');
-		$userName = param('user_name');
 		$password = param('password');
-		$email = param('email');
 		
-		if ($name && $user['name'] !== $name) {
-			$updatedData['name'] = $name;
-		}
-		
-		if ($userName && $user['user_name'] !== $userName) {
-			$updatedData['user_name'] = $userName;
-		}
-		
+		$updatedData = [
+			'name' => param('name') ?? $user['name'],
+			'user_name' => param('user_name') ?? $user['user_name'],
+			'password' => param('password') ?? $user['password']
+		];
 		if ($password && $user['password'] !== md5($password . $salt)) {
 			$salt = getRandomString(16);
 			$updatedData['salt'] = $salt;
-			$newHashedPassword = md5($password . $salt);
-			$updatedData['password'] = $newHashedPassword;
+			$updatedData['password'] = md5($password . $salt);
 		}
 		
-		if ($email && $user['email'] !== $email) {
-			$updatedData['email'] = $email;
-		}
-		
-		if (!empty($updatedData)) {
-			return User::update($updatedData, ['id' => $id]);
-		}
-		return response(200, 'Nothing to update');
+		return User::update($updatedData, ['id' => $id]);
 	}
 }

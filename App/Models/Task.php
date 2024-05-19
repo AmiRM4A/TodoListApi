@@ -7,15 +7,13 @@ namespace App\Models;
  *
  * This model represents the tasks of the application.
  */
-class Task extends Model
-{
+class Task extends Model {
 	/**
 	 * Get the name of the database table associated with the task model.
 	 *
 	 * @return string
 	 */
-	public static function tableName(): string
-	{
+	public static function tableName(): string {
 		return 'tasks';
 	}
 	
@@ -24,8 +22,7 @@ class Task extends Model
 	 *
 	 * @return string|null
 	 */
-	public static function primaryKey(): string|null
-	{
+	public static function primaryKey(): string|null {
 		return 'id';
 	}
 }

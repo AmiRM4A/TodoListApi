@@ -23,7 +23,7 @@ class CORS {
 		$this->setAccessControlAllowMethods('PUT, GET, POST, DELETE, OPTIONS');
 		
 		// Allowed headers for the request
-		$this->setAccessControlAllowHeaders('Authorization,Content-Type');
+		$this->setAccessControlAllowHeaders('Authorization, Content-Type');
 		
 		// Cache the preflight response for 24 hours (86400 seconds)
 		$this->setAccessControlMaxAge(86400);

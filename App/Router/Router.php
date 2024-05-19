@@ -50,21 +50,20 @@ class Router {
 		$result = null;
 		
 		try {
-			// Check Middlewares
+			// Check Middlewares (Route is found here)
 			foreach (self::$route->middleware ?? [] as $middleware) {
-				$result = (new $middleware)->handle(...self::$slugs);
+				$result = (new $middleware)->handle();
 			}
 			
 			if (is_null($result)) {
 				$result = self::executeAction(self::$route->action);
 			}
-			
 		} catch (RouterException $e) { // Service Unavailable
-			$result = response(503, DEV_MODE ? $e->getmessage() : 'The requested route was not found or is not available.');
+			$result = response($e->getCode(), DEV_MODE ? $e->getmessage() : 'The requested route was not found or is not available.');
 		} catch (MiddlewareException $e) {
-			$result = response(503, DEV_MODE ? $e->getmessage() : 'An error occurred while processing the middleware. Please check your middleware configurations.');
+			$result = response($e->getCode(), $e->getmessage());
 		} catch (Exception $e) {
-			$result = response(503, DEV_MODE ? $e->getmessage() : 'An unexpected error occurred. Please try again later.');
+			$result = response($e->getCode(), DEV_MODE ? $e->getmessage() : 'An unexpected error occurred. Please try again later.');
 		}
 		
 		if (is_null($result)) {
@@ -84,7 +83,8 @@ class Router {
 	 * @param mixed $action The action to execute.
 	 *
 	 * @return mixed The result of the action execution.
-	 * @throws RouterException
+	 *
+	 * @throws RouterException Throws an RouterException if the action could not be executed
 	 */
 	private static function executeAction(mixed $action): mixed {
 		if (empty($action)) {

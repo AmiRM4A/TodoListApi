@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\Task;
+use App\Services\Auth;
 use App\Exceptions\DBException;
 use App\Exceptions\ModelException;
 
@@ -16,11 +17,12 @@ class TaskController {
 	 * Retrieves all tasks.
 	 *
 	 * @return mixed The retrieved tasks.
-	 * @throws ModelException
-	 * @throws DBException
+	 *
+	 * @throws ModelException If there is an error with the LoggedIn model.
+	 * @throws DBException If there is an error retrieving data from the database.
 	 */
 	public function index(): mixed {
-		return Task::select('*');
+		return Task::select('*', null, ['created_by' => Auth::user('id')]);
 	}
 	
 	/**
@@ -29,45 +31,46 @@ class TaskController {
 	 * @param int $id The ID of the task to retrieve.
 	 *
 	 * @return mixed The retrieved task or a 404 response if not found.
-	 * @throws ModelException
-	 * @throws DBException
+	 *
+	 * @throws ModelException If there is an error with the LoggedIn model.
+	 * @throws DBException If there is an error retrieving data from the database.
 	 */
 	public function show(int $id): mixed {
-		if (!Task::exists(['id' => $id])) {
+		$userId = Auth::user('id');
+		
+		if (!Task::exists(['AND' => [
+			'id' => $id,
+			'created_by' => $userId
+		]])) {
 			return response(404, 'Task(' . $id . ') not found!');
 		}
 		
-		return Task::get('*', ['id' => $id]) ?: response(404, 'Task not found!');
+		return Task::get('*', null, ['id' => $id]) ?: response(404, 'Task not found!');
 	}
 	
 	/**
 	 * Creates a new task.
 	 *
 	 * @return mixed The created task or a 400 response if the title is invalid.
-	 * @throws ModelException
-	 * @throws DBException
+	 *
+	 * @throws ModelException If there is an error with the LoggedIn model.
+	 * @throws DBException If there is an error retrieving data from the database.
 	 */
 	public function create(): mixed {
-		$title = sanitizeStr(param('title'));
-		$description = sanitizeStr(param('description', ''));
-		$status = sanitizeStr(param('status', 'Uncompleted'));
-		$createdBy = param('created_by', 1);//TODO: Delete default value when you write the login/register part
-		$updatedAt = currentTime();
+		$title = param('title');
+		$description = param('description', '');
+		$status = param('status', 'pending');
 		
 		if (empty($title)) {
 			return response(400, 'Invalid title');
-		}
-		
-		if (empty($createdBy)) {
-			return response(400, 'Invalid Creator');
 		}
 		
 		return Task::insert([
 			'title' => $title,
 			'description' => $description,
 			'status' => $status,
-			'created_by' => $createdBy,
-			'updated_at' => $updatedAt
+			'created_by' => Auth::user('id'),
+			'updated_at' => currentTime()
 		]);
 	}
 	
@@ -77,11 +80,17 @@ class TaskController {
 	 * @param int $id The ID of the task to delete.
 	 *
 	 * @return mixed The result of the delete operation.
-	 * @throws ModelException
-	 * @throws DBException
+	 *
+	 * @throws ModelException If there is an error with the LoggedIn model.
+	 * @throws DBException If there is an error retrieving data from the database.
 	 */
 	public function destroy(int $id): mixed {
-		if (!Task::exists(['id' => $id])) {
+		$userId = Auth::user('id');
+		
+		if (!Task::exists(['AND' => [
+			'id' => $id,
+			'created_by' => $userId
+		]])) {
 			return response(404, 'Task(' . $id . ') not found!');
 		}
 		
@@ -94,38 +103,29 @@ class TaskController {
 	 * @param int $id The ID of the task to update.
 	 *
 	 * @return mixed The result of the update operation.
-	 * @throws ModelException
-	 * @throws DBException
+	 *
+	 * @throws ModelException If there is an error with the LoggedIn model.
+	 * @throws DBException If there is an error retrieving data from the database.
 	 */
 	public function update(int $id): mixed {
-		$task = Task::get('*', ['id' => $id]);
+		$userId = Auth::user('id');
+		$task = Task::get('*', null, ['AND' => [
+			'id' => $id,
+			'created_by' => $userId
+		]]);
 		
 		if (!$task) {
 			return response(404, 'Task(' . $id . ') not found!');
 		}
 		
-		$updatedData = [];
-		$title = sanitizeStr(rawParam('title'));
-		$description = sanitizeStr(rawParam('description'));
-		$status = sanitizeStr(rawParam('status'));
+		$updatedData = [
+			'title' => param('title') ?? $task['title'],
+			'description' => param('description') ?? $task['description'],
+			'status' => param('status') ?? $task['status'],
+			'completed_at' => param('completed_at') ?? $task['completed_at'],
+			'updated_at' => currentTime()
+		];
 		
-		if ($title && $task['title'] !== $title) {
-			$updatedData['title'] = $title;
-		}
-		
-		if ($description && $task['description'] !== $description) {
-			$updatedData['description'] = $description;
-		}
-		
-		if ($status && $task['status'] !== $status) {
-			$updatedData['status'] = $status;
-		}
-		
-		if (!empty($updatedData)) {
-			$updatedData['updated_at'] = currentTime();
-			return Task::update($updatedData, ['id' => $id]);
-		}
-		
-		return response(200, 'Nothing to update');
+		return Task::update($updatedData, ['id' => $id]);
 	}
 }
