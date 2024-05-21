@@ -1,0 +1,384 @@
+{
+	"info": {
+		"_postman_id": "5039177f-0c65-462c-8af5-2ae0b4241eac",
+		"name": "Todolist Api",
+		"description": "The collection includes requests for various functionalities such as managing **tasks**, **users**, and **authentication**. Each request is structured with the required **method**, **endpoint**, **headers**, and body parameters where applicable.\n\nTo use the collection effectively, ensure you have obtained an authentication token by logging in via the appropriate endpoint.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "26440504"
+	},
+	"item": [
+		{
+			"name": "Task",
+			"item": [
+				{
+					"name": "Get Tasks",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{your_domain_name}}/get-tasks",
+						"description": "Replace{{task_id}} with your own task id"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Task",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{your_domain_name}}/get-task/{{task_id}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Add Task",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "title",
+									"value": "",
+									"description": "Your title here",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "",
+									"description": "Your description here",
+									"type": "text"
+								}
+							]
+						},
+						"url": "{{your_domain_name}}/create-task"
+					},
+					"response": []
+				},
+				{
+					"name": "Remove Task",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "{{your_domain_name}}/remove-task/{{task_id}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Task",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "title",
+									"value": "",
+									"description": "Your new task title here",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "",
+									"description": "Your new description here",
+									"type": "text"
+								},
+								{
+									"key": "status",
+									"value": "",
+									"description": "Your new status here",
+									"type": "text"
+								},
+								{
+									"key": "completed_at",
+									"value": "",
+									"description": "Your new completion time here (e.g => '2024-01-01 00:00:00')",
+									"type": "text"
+								}
+							]
+						},
+						"url": "{{your_domain_name}}/update-task/{{task_id}}"
+					},
+					"response": []
+				}
+			],
+			"description": "This folder contains API endpoints for managing tasks in the application. including:\n\n1. Creating new tasks\n2. Retrieving task data\n3. Updating existing tasks\n4. Deleting tasks\n    \n\n| Endpoint | HTTP Method | **Description** | **Returns** | **Auth** |\n| --- | --- | --- | --- | --- |\n| `/get-tasks` | GET | Get all tasks 📄 | List of tasks | ✅ |\n| `/get-task/{id}` | GET | Get a specific task by ID 📇 | Task data | ✅ |\n| `/create-task` | POST | Create a new task ➕ | Task ID on success | ✅ |\n| `/remove-task/{id}` | DELETE | Delete an existing task by ID ❌ | Confirmation of deletion | ✅ |\n| `/update-task/{id}` | PUT | Update an existing task by ID ✏️ | Confirmation of update | ✅ |"
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Get Users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{your_domain_name}}/get-users"
+					},
+					"response": []
+				},
+				{
+					"name": "Get User",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{your_domain_name}}/get-user/{{user_id}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Add User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "",
+									"description": "Your name here",
+									"type": "text"
+								},
+								{
+									"key": "user_name",
+									"value": "",
+									"description": "Your usernme here",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "",
+									"description": "Your password here",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "",
+									"description": "Your email address here",
+									"type": "text"
+								}
+							]
+						},
+						"url": "{{your_domain_name}}/create-user/"
+					},
+					"response": []
+				},
+				{
+					"name": "Remove User",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "{{your_domain_name}}/remove-user/{{user_id}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Update User",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "",
+									"description": "Your new name here",
+									"type": "text"
+								},
+								{
+									"key": "user_name",
+									"value": "",
+									"description": "Your new username here",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "",
+									"description": "Your new password here",
+									"type": "text"
+								}
+							]
+						},
+						"url": "{{your_domain_name}}/update-user/{{user_id}}"
+					},
+					"response": []
+				}
+			],
+			"description": "This folder contains API endpoints for **managing users** in the application. including:\n\n1. Creating new users\n2. Retrieving user data\n3. Updating existing users\n4. Deleting users\n    \n\n| Endpoint | HTTP Method | **Description** | **Returns** | **Auth** |\n| --- | --- | --- | --- | --- |\n| `/get-users` | GET | Get all users 👥 | List of users | ✅ |\n| `/get-user/{id}` | GET | Get a specific user by ID 👤 | User data | ✅ |\n| `/create-user` | POST | Create a new user ➕ | User ID on success | ❌ |\n| `/remove-user/{id}` | DELETE | Delete an existing user by ID ❌ | Confirmation of deletion | ✅ |\n| `/update-user/{id}` | PUT | Update an existing user by ID ✏️ | Confirmation of update | ✅ |",
+			"auth": {
+				"type": "noauth"
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "login",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "email",
+									"value": "",
+									"description": "Your registered email here",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "",
+									"description": "Your regitered account's password here",
+									"type": "text"
+								}
+							]
+						},
+						"url": "{{your_domain_name}}/login"
+					},
+					"response": []
+				},
+				{
+					"name": "Me (get user data)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": "{{your_domain_name}}/me"
+					},
+					"response": []
+				},
+				{
+					"name": "Register",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "",
+									"description": "Your name here",
+									"type": "text"
+								},
+								{
+									"key": "user_name",
+									"value": "",
+									"description": "Your usernme here",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "",
+									"description": "Your password here",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "",
+									"description": "Your email address here",
+									"type": "text"
+								}
+							]
+						},
+						"url": "{{your_domain_name}}/create-user/"
+					},
+					"response": []
+				}
+			],
+			"description": "Provides some endpoints for **Login** and **Register** process.\n\n| Endpoint | HTTP Method | **Description** | **Returns** | **Auth** |\n| --- | --- | --- | --- | --- |\n| `/create-user` | POST | Endpoint for creating (register) new user ➕ | User ID on success | ❌ |\n| `/login` | POST | Endpoint for user login 👋 | A token based on logged in user's data | ❌ |\n| `/me` | POST | Endpoint for retrieving user data 👤 | User's data | ✅ |\n| `/log-out` | POST | Endpoint for user logout 🚪 | A successful response | ✅ |"
+		},
+		{
+			"name": "Welcome",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": "{{your_domain_name}}/"
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": {
+			"token": "{{your_token_access}}"
+		}
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "your_domain_name",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "task_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "user_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "your_token_access",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
