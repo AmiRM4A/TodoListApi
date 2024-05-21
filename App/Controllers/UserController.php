@@ -136,8 +136,7 @@ class UserController {
 		
 		$updatedData = [
 			'name' => param('name') ?? $user['name'],
-			'user_name' => param('user_name') ?? $user['user_name'],
-			'password' => param('password') ?? $user['password']
+			'user_name' => param('user_name') ?? $user['user_name']
 		];
 		if ($password && $user['password'] !== md5($password . $salt)) {
 			$salt = getRandomString(16);
