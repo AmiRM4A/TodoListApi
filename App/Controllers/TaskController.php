@@ -39,10 +39,7 @@ class TaskController {
 	 * @throws DBException If there is an error retrieving data from the database.
 	 */
 	public function show(int $id): mixed {
-		$taskData = Task::get('*', null, [
-			'id' => $id,
-			'created_by' => Auth::user('id')
-		]);
+		$taskData = Task::getAuthTask($id);
 		if ($taskData) {
 			return response(200, 'Task(' . $id . ') retrieved successfully', $taskData, true);
 		}
@@ -100,6 +97,12 @@ class TaskController {
 	 * @throws DBException If there is an error retrieving data from the database.
 	 */
 	public function destroy(int $id): mixed {
+		$taskId = Task::getAuthTask($id, 'id');
+		
+		if (!$taskId) {
+			return response(404, 'Task(' . $id . ') not found!');
+		}
+		
 		if (Task::delete([
 			'id' => $id,
 			'created_by' => Auth::user('id')
@@ -107,7 +110,7 @@ class TaskController {
 			return response(200, 'Task(' . $id . ') removed successfully', null, true);
 		}
 		
-		return response(404, 'Task(' . $id . ') not found!');
+		return response(500, 'Unable to update task(' . $id . ')!');
 	}
 	
 	/**
@@ -121,10 +124,7 @@ class TaskController {
 	 * @throws DBException If there is an error retrieving data from the database.
 	 */
 	public function update(int $id): mixed {
-		$task = Task::get('*', null, ['AND' => [
-			'id' => $id,
-			'created_by' => Auth::user('id')
-		]]);
+		$task = Task::getAuthTask($id);
 		
 		if (!$task) {
 			return response(404, 'Task(' . $id . ') not found!');
