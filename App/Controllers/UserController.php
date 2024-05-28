@@ -22,7 +22,8 @@ class UserController {
 	 * @throws DBException If there is an error retrieving data from the database.
 	 */
 	public function index(): mixed {
-		return User::select('*');
+		$usersList = User::select('*');
+		return response(200, 'Users list retrieved successfully', $usersList ?? [], true);
 	}
 	
 	/**
@@ -36,11 +37,12 @@ class UserController {
 	 * @throws DBException If there is an error retrieving data from the database.
 	 */
 	public function show(int $id): mixed {
-		if (!User::exists(['id' => $id])) {
+		$userData = User::get('*', null, ['id' => $id]);
+		if (!$userData) {
 			return response(404, 'User(' . $id . ') not found!');
 		}
 		
-		return User::get('*', null, ['id' => $id]) ?: response(404, 'User not found!');
+		return response(200, 'User(' . $id . ') retrieved successfully', null, true);
 	}
 	
 	/**
@@ -85,8 +87,7 @@ class UserController {
 		
 		$salt = getRandomString(16);
 		$hashedPassword = md5($password . $salt);
-		
-		return User::insert([
+		$lastId = User::insert([
 			'name' => $name,
 			'user_name' => $userName,
 			'password' => $hashedPassword,
@@ -95,6 +96,12 @@ class UserController {
 			'last_ip' => $ip,
 			'salt' => $salt
 		]);
+		
+		if (!$lastId){
+			return response(400, 'Unable to create your user!');
+		}
+		
+		return response(200, 'User created successfully', ['id' => $lastId], true);
 	}
 	
 	/**
@@ -108,11 +115,11 @@ class UserController {
 	 * @throws DBException If there is an error retrieving data from the database.
 	 */
 	public function destroy(int $id): mixed {
-		if (!User::exists(['id' => $id])) {
-			return response(404, 'User(' . $id . ') not found!');
+		if (User::delete(['id' => $id])) {
+			return response(200, 'User deleted successfully', null, true);
 		}
 		
-		return User::delete(['id' => $id]);
+		return response(404, 'User(' . $id . ') not found!');
 	}
 	
 	/**
@@ -144,6 +151,10 @@ class UserController {
 			$updatedData['password'] = md5($password . $salt);
 		}
 		
-		return User::update($updatedData, ['id' => $id]);
+		if (User::update($updatedData, ['id' => $id])){
+			return response(200, 'User updated successfully', null, true);
+		}
+		
+		return response(500, 'Unable to update user(' . $id . ')');
 	}
 }

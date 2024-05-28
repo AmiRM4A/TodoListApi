@@ -22,7 +22,10 @@ class TaskController {
 	 * @throws DBException If there is an error retrieving data from the database.
 	 */
 	public function index(): mixed {
-		return Task::select('*', null, ['created_by' => Auth::user('id')]);
+		$tasksList = Task::select('*', null,
+			['created_by' => Auth::user('id')]
+		);
+		return response(200, 'Tasks list retrieved successfully', $tasksList ?? [], true);
 	}
 	
 	/**
@@ -36,16 +39,15 @@ class TaskController {
 	 * @throws DBException If there is an error retrieving data from the database.
 	 */
 	public function show(int $id): mixed {
-		$userId = Auth::user('id');
-		
-		if (!Task::exists(['AND' => [
+		$taskData = Task::get('*', null, [
 			'id' => $id,
-			'created_by' => $userId
-		]])) {
-			return response(404, 'Task(' . $id . ') not found!');
+			'created_by' => Auth::user('id')
+		]);
+		if ($taskData) {
+			return response(200, 'Task(' . $id . ') retrieved successfully', $taskData, true);
 		}
 		
-		return Task::get('*', null, ['id' => $id]) ?: response(404, 'Task not found!');
+		return response(404, 'Task(' . $id . ') not found!');
 	}
 	
 	/**
@@ -58,20 +60,33 @@ class TaskController {
 	 */
 	public function create(): mixed {
 		$title = param('title');
-		$description = param('description', '');
-		$status = param('status', 'pending');
 		
-		if (empty($title)) {
-			return response(400, 'Invalid title');
+		if (!$title) {
+			return response(400, 'Invalid title!');
 		}
 		
-		return Task::insert([
+		$lastId = Task::insert([
 			'title' => $title,
-			'description' => $description,
-			'status' => $status,
+			'description' => param('description', ''),
+			'status' => param('status', 'pending'),
 			'created_by' => Auth::user('id'),
 			'updated_at' => currentTime()
 		]);
+		
+		if (!$lastId) {
+			return response(500, 'Unable to create your task!');
+		}
+		
+		$createdAt = Task::get('created_at', null, ['id' => $lastId]);
+		
+		if (!$createdAt) {
+			return response(500, 'Unable to retrieve task\'s creation date!');
+		}
+		
+		return response(200, 'Task created successfully', [
+			'id' => $lastId,
+			'created_at' => $createdAt
+		], true);
 	}
 	
 	/**
@@ -85,16 +100,14 @@ class TaskController {
 	 * @throws DBException If there is an error retrieving data from the database.
 	 */
 	public function destroy(int $id): mixed {
-		$userId = Auth::user('id');
-		
-		if (!Task::exists(['AND' => [
+		if (Task::delete([
 			'id' => $id,
-			'created_by' => $userId
-		]])) {
-			return response(404, 'Task(' . $id . ') not found!');
+			'created_by' => Auth::user('id')
+		])) {
+			return response(200, 'Task(' . $id . ') removed successfully', null, true);
 		}
 		
-		return Task::delete(['id' => $id]);
+		return response(404, 'Task(' . $id . ') not found!');
 	}
 	
 	/**
@@ -108,24 +121,37 @@ class TaskController {
 	 * @throws DBException If there is an error retrieving data from the database.
 	 */
 	public function update(int $id): mixed {
-		$userId = Auth::user('id');
 		$task = Task::get('*', null, ['AND' => [
 			'id' => $id,
-			'created_by' => $userId
+			'created_by' => Auth::user('id')
 		]]);
 		
 		if (!$task) {
 			return response(404, 'Task(' . $id . ') not found!');
 		}
 		
-		$updatedData = [
+		$status = param('status');
+		$isCompleted = strtolower($status ?? '') === 'completed';
+		$completedAtTime = currentTime();
+		
+		if (Task::update([
 			'title' => param('title') ?? $task['title'],
 			'description' => param('description') ?? $task['description'],
-			'status' => param('status') ?? $task['status'],
-			'completed_at' => param('completed_at') ?? $task['completed_at'],
+			'status' => $status ?? $task['status'],
+			'completed_at' => $isCompleted ? $completedAtTime : $task['completed_at'],
 			'updated_at' => currentTime()
-		];
+		], ['id' => $id])) {
+			$data = [];
+			// Check if the task's status is completed, return completed time and if it's not, return creation time
+			if ($isCompleted) {
+				$data['completed_at'] = $completedAtTime;
+			} else {
+				$data['created_at'] = Task::get('created_at', null, ['id' => $id]);
+			}
+			
+			return response(200, 'Task(' . $id . ') updated successfully', $data, true);
+		}
 		
-		return Task::update($updatedData, ['id' => $id]);
+		return response(400, 'Unable to update task(' . $id . ')!');
 	}
 }
