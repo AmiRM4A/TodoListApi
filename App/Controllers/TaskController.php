@@ -129,29 +129,80 @@ class TaskController {
 		if (!$task) {
 			return response(404, 'Task(' . $id . ') not found!');
 		}
-		
-		$status = param('status');
-		$isCompleted = strtolower($status ?? '') === 'completed';
-		$completedAtTime = currentTime();
-		
+
 		if (Task::update([
 			'title' => param('title') ?? $task['title'],
 			'description' => param('description') ?? $task['description'],
-			'status' => $status ?? $task['status'],
-			'completed_at' => $isCompleted ? $completedAtTime : $task['completed_at'],
+			'status' => param('status') ?? $task['status'],
 			'updated_at' => currentTime()
 		], ['id' => $id])) {
-			$data = [];
-			// Check if the task's status is completed, return completed time and if it's not, return creation time
-			if ($isCompleted) {
-				$data['completed_at'] = $completedAtTime;
-			} else {
-				$data['created_at'] = Task::get('created_at', null, ['id' => $id]);
-			}
-			
-			return response(200, 'Task(' . $id . ') updated successfully', $data, true);
+			return response(200, 'Task(' . $id . ') updated successfully', null, true);
 		}
 		
-		return response(400, 'Unable to update task(' . $id . ')!');
+		return response(500, 'Unable to update task(' . $id . ')!');
+	}
+	
+	/**
+	 * Marking a task as completed (done)
+	 *
+	 * @param int $id The ID of the task to update.
+	 *
+	 * @return mixed The result of the operation.
+	 *
+	 * @throws ModelException If there is an error with the LoggedIn model.
+	 * @throws DBException If there is an error retrieving data from the database.
+	 */
+	public function complete(int $id): mixed {
+		$taskId = Task::getAuthTask($id, 'id');
+		
+		if (!$taskId) {
+			return response(404, 'Task(' . $id . ') not found!');
+		}
+		
+		$completedAtTime = currentTime();
+		
+		if (Task::update([
+			'completed_at' => $completedAtTime,
+			'status' => 'completed'
+		], [
+			'id' => $taskId
+		])){
+			return response(200, 'Task(' . $id . ') completed successfully', [
+				'completed_at' => $completedAtTime
+			], true);
+		}
+		
+		return response(500, 'Unable to complete task(' . $id . ')');
+	}
+	
+	/**
+	 * Marking a task as uncompleted (not done)
+	 *
+	 * @param int $id The ID of the task to update.
+	 *
+	 * @return mixed The result of the operation.
+	 *
+	 * @throws ModelException If there is an error with the LoggedIn model.
+	 * @throws DBException If there is an error retrieving data from the database.
+	 */
+	public function unComplete(int $id): mixed {
+		$taskData = Task::getAuthTask($id, ['id', 'created_at']);
+		
+		if (!$taskData) {
+			return response(404, 'Task(' . $id . ') not found!');
+		}
+		
+		if (Task::update([
+			'completed_at' => null,
+			'status' => 'pending'
+		], [
+			'id' => $taskData['id']
+		])) {
+			return response(200, 'Task(' . $id . ') completed successfully', [
+				'created_at' => $taskData['created_at']
+			], true);
+		}
+		
+		return response(500, 'Unable to uncomplete task(' . $id . ')');
 	}
 }
