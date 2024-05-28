@@ -18,6 +18,6 @@ class MeController {
 	 */
 	public function getLoginData(): Response {
 		// If user data is found, return a 200 OK response with the user data
-		return response(200, 'User data retrieved successfully.', Auth::user());
+		return response(200, 'User data retrieved successfully.', Auth::user(), true);
 	}
 }
