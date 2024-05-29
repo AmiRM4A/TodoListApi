@@ -9,6 +9,11 @@ namespace App\Core;
  */
 class Response {
 	/**
+	 * @var bool $success The success flag.
+	 */
+	private bool $success = false;
+	
+	/**
 	 * @var mixed The response message.
 	 */
 	private mixed $message = null;
@@ -37,6 +42,18 @@ class Response {
 	 */
 	public function data(mixed $data): self {
 		$this->data = $data;
+		return $this;
+	}
+	
+	/**
+	 * Set the success flag.
+	 *
+	 * @param bool $success The success flag.
+	 *
+	 * @return self Returns the current instance of the object.
+	 */
+	public function success(bool $success = false): self {
+		$this->success = $success;
 		return $this;
 	}
 	
@@ -227,6 +244,7 @@ class Response {
 	public function send(bool $return = false) {
 		$this->setHeaders();
 		$response = json_encode([
+			'success' => $this->success,
 			'message' => $this->message,
 			'data' => $this->data
 		]);

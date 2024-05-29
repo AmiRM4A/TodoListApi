@@ -62,13 +62,17 @@ class AuthController {
 		$expTime = date('Y-m-d H:i:s', strtotime('+ ' . $expIn));
 		
 		// Store the token, expiration time, and user ID in the LoggedIn model
-		LoggedIn::insert([
+		$lastId = LoggedIn::insert([
 			'token' => $token,
 			'expires_at' => $expTime,
 			'user_id' => $user['id']
 		]);
 		
-		return response(200, 'Authentication successful. You are now logged in.', ['token' => $token]);
+		if (empty($lastId)) {
+			return response(500, 'Login Failed!');
+		}
+		
+		return response(200, 'Authentication successful. You are now logged in.', ['token' => $token], true);
 	}
 	
 	/**
@@ -82,9 +86,14 @@ class AuthController {
 	 * @throws DBException If there is an error retrieving data from the database.
 	 */
 	public function handleLogOut(): ?Response {
-		return LoggedIn::delete(['AND' => [
+		if (LoggedIn::delete(['AND' => [
 			'user_id' => Auth::user('id'),
 			'token' => Auth::getToken()
-		]]) ? response(200, 'You are now logged out.') : null;
+		]])) {
+			// Return success response if user is logged out
+			return response(200, 'You are logged out now', null, true);
+		}
+		
+		return response(500, 'Logout Failed!');
 	}
 }

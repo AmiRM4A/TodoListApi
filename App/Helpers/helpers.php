@@ -91,11 +91,12 @@ if (!function_exists('response')) {
 	 *
 	 * @param int|null $code The HTTP status code for the response.
 	 * @param string|null $message The message to be included in the response.
+	 * @param bool $success The success flag for the response.
 	 *
 	 * @return Response A new Response object.
 	 */
-	function response(?int $code = null, ?string $message = null, mixed $data = null): Response {
-		return (new Response())->statusCode($code)->message($message)->data($data);
+	function response(?int $code = null, ?string $message = null, mixed $data = null, bool $success = false): Response {
+		return (new Response())->statusCode($code)->message($message)->data($data)->success($success);
 	}
 }
 
